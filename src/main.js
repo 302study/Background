@@ -3,6 +3,9 @@ import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import qs from 'qs'
 //import './assets/theme/theme-green/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
@@ -10,10 +13,13 @@ import Vuex from 'vuex'
 //import NProgress from 'nprogress'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
-import Mock from './mock'
-Mock.bootstrap();
+//import Mock from './mock'
+//Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
+Vue.use(VueAxios,axios);
+Vue.prototype.qs=qs;
 
+axios.defaults.baseURL = '/api'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)

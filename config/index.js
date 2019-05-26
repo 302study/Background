@@ -22,12 +22,21 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   },
   dev: {
-    env: require('./dev.env'),
-    port: 8080,
-    autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api': {
+        target: "http://www.awei.com",//后端接口地址
+        changeOrigin: true,//是否允许跨越
+        pathRewrite:{
+          '^/api':''
+        }
+      }},
+    env: require('./dev.env'),
+    host: 'localhost', // can be overwritten by process.env.HOST
+    port: 8088,
+    autoOpenBrowser: true,
+
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)

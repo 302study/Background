@@ -50,18 +50,22 @@
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
+            let post=this.qs.stringify({
+              username: this.ruleForm2.account,
+              password: this.ruleForm2.checkPass
+            });
             var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            requestLogin(loginParams).then(data => {
+            requestLogin(post).then(data => {
               this.logining = false;
               //NProgress.done();
               let { msg, code, user } = data;
-              if (code !== 200) {
+              if (data.status !== 10001) {
                 this.$message({
                   message: msg,
                   type: 'error'
                 });
               } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('user', JSON.stringify(data.data.username));
                 this.$router.push({ path: '/table' });
               }
             });

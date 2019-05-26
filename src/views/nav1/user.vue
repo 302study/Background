@@ -1,77 +1,101 @@
 <template>
-	<section>
-		<!--工具条-->
-		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-			<el-form :inline="true" :model="filters">
-				<el-form-item>
-					<el-input v-model="filters.name" placeholder="姓名"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" v-on:click="getUser">查询</el-button>
-				</el-form-item>
-			</el-form>
-		</el-col>
 
-		<!--列表-->
-		<template>
-			<el-table :data="users" highlight-current-row v-loading="loading" style="width: 100%;">
-				<el-table-column type="index" width="60">
-				</el-table-column>
-				<el-table-column prop="name" label="姓名" width="120" sortable>
-				</el-table-column>
-				<el-table-column prop="sex" label="性别" width="100" :formatter="formatSex" sortable>
-				</el-table-column>
-				<el-table-column prop="age" label="年龄" width="100" sortable>
-				</el-table-column>
-				<el-table-column prop="birth" label="生日" width="120" sortable>
-				</el-table-column>
-				<el-table-column prop="addr" label="地址" min-width="180" sortable>
-				</el-table-column>
-			</el-table>
-		</template>
+	<div class="container">
+		<div class="row row-centered">
+			<div class="well col-md-6 col-centered">
+				<h2>欢迎登录</h2>
 
-	</section>
+				<div class="input-group input-group-md">
+					<span class="input-group-addon" id="sizing-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
+					<input type="text" class="form-control" v-model="username"  placeholder="请输入用户名"/>
+				</div>
+				<div class="input-group input-group-md">
+					<span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-lock"></i></span>
+					<input type="password" class="form-control" v-model="password"  placeholder="请输入密码"/>
+				</div>
+				<br/>
+				<button type="submit" class="btn btn-success btn-block" @click="getdata">登录</button>
+
+			</div>
+		</div>
+	</div>
+
 </template>
-<script>
-	import { getUserList } from '../../api/api';
-	//import NProgress from 'nprogress'
+
+
+
+<script type="es6">
 	export default {
-		data() {
-			return {
-				filters: {
-					name: ''
-				},
-				loading: false,
-				users: [
-				]
+		name: "mytest",
+		data(){
+			return{
+				meassage:"hello",
+				username:"",
+				password: ""
+
+			}
+
+		},
+
+		methods:{
+			getdata:function () {
+				let config = {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				}
+				let postData =this.qs.stringify({
+					username: this.username,
+					password: this.password
+
+				})
+				this.axios.post('/user/login',postData,config)
+						.then((res) => {
+							if(res.data.status=='10001'){
+								alert("登陆成功！")
+								this.$router.push({
+									name: 'newtest',
+									// name: 'mallList',
+									query: {
+										username: this.username
+									}
+								})
+
+							}
+						})
 			}
 		},
-		methods: {
-			//性别显示转换
-			formatSex: function (row, column) {
-				return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-			},
-			//获取用户列表
-			getUser: function () {
-				let para = {
-					name: this.filters.name
-				};
-				this.loading = true;
-				//NProgress.start();
-				getUserList(para).then((res) => {
-					this.users = res.data.users;
-					this.loading = false;
-					//NProgress.done();
-				});
-			}
-		},
-		mounted() {
-			this.getUser();
-		}
-	};
+	}
+
 
 </script>
 
-<style scoped>
+
+<style type="text/css">
+	#vue{
+		color: green;
+		font-size: 28px;
+	}
+	/*web background*/
+	.container{
+		display:table;
+		height:100%;
+	}
+
+	.row{
+		display: table-cell;
+		vertical-align: middle;
+	}
+	/* centered columns styles */
+	.row-centered {
+		text-align:center;
+	}
+	.col-centered {
+		display:inline-block;
+		float:none;
+		text-align:left;
+		margin-right:-10px;
+		margin-top: 15%;
+	}
 
 </style>
