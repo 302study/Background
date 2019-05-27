@@ -33,13 +33,8 @@
 				<img width="100%" :src="dialogImageUrl" alt="">
 			</el-dialog>
 		</el-form-item>
-
-
-		<el-form-item label="描述" >
-			<simditor
-					:options="options"
-					@change="change">
-			</simditor>
+		<el-form-item>
+			<Editor @input="handelIncrease"></Editor>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="submit2">立即创建</el-button>
@@ -52,9 +47,12 @@
 </template>
 
 <script>
-	import Simditor from '../../components/simditor'
-	export default {
+	import Editor from "@/components/Editor";
 
+	export default {
+		components: {
+			Editor
+		},
 		data() {
 			return {
 				form: {
@@ -67,65 +65,47 @@
 					detail: '',
 
 				},
+				dialogImageUrl: '',
+				dialogVisible: false
+			}
+		},
+				computed: {//实时计算
+					loading() {
+						return this.$store.state.loading;
+					},
 
-				content:'',
-				options: {
-					placeHolder: 'this is placeHolder',
-					toolbarFloat: false,
-					toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment',
-					],
-					pasteImage: true,
-					upload: {
-						url: '/manage/product/richtext_img_upload', //文件上传的接口地址
-						params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交
-						fileKey: 'file', //服务器端获取文件数据的参数名
-						connectionCount: 3,
-						leaveConfirm: '正在上传文件'
-					}
 				},
 
-			}
-		},
-		components: {
-			Simditor
-		},
-		computed: {//实时计算
-			loading(){
-				return this.$store.state.loading;
-			},
 
-		},
+				methods: {
+					handleRemove(file, fileList) {
+						console.log(file, fileList);
+					},
+					handlePictureCardPreview(file) {
+						this.dialogImageUrl = file.url;
+						this.dialogVisible = true;
+					},
+					// 点击保存按钮上传图片
+					submit2: function (res) {
+						console.log(this.infoForm);
+						console.log(this.form.detail);
+						let that = this
+						this.$refs.upload.submit();
+					},
 
+					// 图片上传成功后，后台返回图片的路径
+					onSuccess: function (res) {
+						// console.log(res);
+						if (res.status == 200) {
+							this.imgUrl = res.data.imgUrl;
+						}
+					},
+					handelIncrease(step) {
+						console.log("step",step)
+					},
 
-		methods: {
-			handleRemove(file, fileList) {
-				console.log(file, fileList);
-			},
-			handlePictureCardPreview(file) {
-				this.dialogImageUrl = file.url;
-				this.dialogVisible = true;
-			},
-			// 点击保存按钮上传图片
-			submit2: function (res) {
-				console.log(this.infoForm);
-				console.log(this.form.detail);
-				let that = this
-				this.$refs.upload.submit();
-			},
+				},
 
-			// 图片上传成功后，后台返回图片的路径
-			onSuccess: function (res) {
-				// console.log(res);
-				if (res.status == 200) {
-					this.imgUrl = res.data.imgUrl;
-				}
-			},
-			change(val){
-				console.log(val)  //以html格式获取simditor的正文内容
-			},
-
-
-		}
-			}
+	}
 
 </script>
