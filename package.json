@@ -11,12 +11,16 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "cropper": "^4.0.0",
     "echarts": "^3.3.2",
     "element-ui": "^1.2.8",
     "font-awesome": "^4.7.0",
+    "jquery": "^3.4.1",
     "nprogress": "^0.2.0",
+    "simditor": "^2.3.25",
     "vue": "^2.2.2",
     "vue-axios": "^2.1.4",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^2.3.0",
     "vuex": "^2.0.0-rc.6"
   },
