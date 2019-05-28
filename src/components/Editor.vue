@@ -98,7 +98,7 @@
                         }
                     }
                 },
-                serverUrl: "api/manage/product/upload", // 这里写你要上传的图片服务器地址
+                serverUrl: "api/manage/product/richtext_img_upload", // 这里写你要上传的图片服务器地址
                 header: {
                     // token: sessionStorage.token
                 } // 有的图片服务器要求请求头需要有token
