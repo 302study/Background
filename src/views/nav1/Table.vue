@@ -105,19 +105,21 @@
 				this.getProductList();
 			},
 			//获取商品列表
-			getUsers() {
+			  getUsers () {
 				let para = {
 					page: this.page,
 					name: this.filters.name
 				};
 				this.listLoading = true;
 				//NProgress.start();
-				getProductList(para).then((res) => {
+				getProductList().then((res) => {
+					console.log(res);
 					this.total = res.data.total;
 
 					this.products = res.data.data.list;
+					console.log(this.products)
 					this.total=res.data.data.total;
-
+					this.currentChangePage(this.products,this.currentPage)
 					this.listLoading = false;
 					//NProgress.done();
 				});
@@ -147,7 +149,6 @@
 		},
 		mounted() {
 			this.getUsers();
-			this.currentChangePage(this.products,this.currentPage)
 		}
 	}
 
