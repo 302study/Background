@@ -42,7 +42,7 @@
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
-					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
@@ -95,7 +95,7 @@
 					}
 				},
 				currentPage:1, //初始页
-				pageSize:3,    //    每页的数据
+				pageSize:10,    //    每页的数据
 			}
 		},
 
@@ -105,21 +105,20 @@
 				this.getProductList();
 			},
 			//获取商品列表
-			  getUsers () {
+			getUsers() {
 				let para = {
 					page: this.page,
 					name: this.filters.name
 				};
 				this.listLoading = true;
 				//NProgress.start();
-				getProductList().then((res) => {
-					console.log(res);
+				getProductList(para).then((res) => {
 					this.total = res.data.total;
 
 					this.products = res.data.data.list;
-					console.log(this.products)
+                    this.currentChangePage(this.products,this.currentPage)
 					this.total=res.data.data.total;
-					this.currentChangePage(this.products,this.currentPage)
+
 					this.listLoading = false;
 					//NProgress.done();
 				});
@@ -144,11 +143,20 @@
 					}
 				}
 			},
-
+            handleEdit(row){
+                this.$router.push({
+                    path: '/editProduct',
+                    // name: 'mallList',
+                    query: {
+                        mallCode: row
+                    }
+                })
+            },
 
 		},
 		mounted() {
 			this.getUsers();
+
 		}
 	}
 

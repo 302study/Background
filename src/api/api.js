@@ -21,3 +21,4 @@ export const editUser = params => { return axios.get(`${base}/user/edit`, { para
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 export const getProductList = params => { return axios.get(`manage/product/list`, { params: params }); };
+export const getProducType = params => { return axios.post(`manage/category/get_category`, params,config ).then(res => res.data); };
