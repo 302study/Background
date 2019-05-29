@@ -9,6 +9,7 @@ import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
 import echarts from './views/charts/echarts.vue'
+import editProduct from './views/nav1/editProduct'
 
 let routes = [
     {
@@ -23,6 +24,12 @@ let routes = [
         name: '',
         hidden: true
     },
+    {
+        path: '/editProduct',
+        component: editProduct,
+        name: '编辑商品' ,
+        hidden: true
+    },
     //{ path: '/main', component: Main },
     {
         path: '/',
@@ -34,6 +41,7 @@ let routes = [
             { path: '/table', component: Table, name: 'Table' },
             { path: '/form', component: Form, name: 'Form' },
             { path: '/user', component: user, name: '列表' },
+
         ]
     },
     {

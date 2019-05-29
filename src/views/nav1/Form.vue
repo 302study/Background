@@ -13,10 +13,17 @@
 			<el-input v-model="form.stock"></el-input>
 		</el-form-item>
 		<el-form-item label="商品种类">
-			<el-select v-model="form.type" placeholder="请选择商品种类">
-				<el-option label="手机" value="shanghai"></el-option>
-				<el-option label="手机" value="beijing"></el-option>
-			</el-select>
+			<treeselect
+					name="demo"
+					:multiple="false"
+					:searchable="true"
+					:open-on-click="true"
+					:disable-branch-nodes="true"
+					:options="options"
+					:limit="3"
+					:max-height="200"
+					v-model="value"
+			/>
 		</el-form-item>
 		<el-form-item label="商品主图">
 			<el-upload
@@ -47,17 +54,23 @@
 </template>
 
 <script>
+	import {getProducType} from '../../api/api'
 	import Editor from "@/components/Editor";
+	// import the component
+	import Treeselect from '@riophae/vue-treeselect'
+	// import the styles
+	import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 	export default {
 		components: {
-			Editor
+			Editor,
+			Treeselect ,
 		},
 		data() {
 			return {
 				form: {
 					name: '',
-					type: '',
+                    type:'',
 					subtitle: '',
 					price: '',
 					delivery: false,
@@ -65,6 +78,14 @@
 					detail: '',
 
 				},
+				value: null,
+				// define options
+				options: [{
+					id: 'a',
+					label: 'a',
+					parentid:'',
+					children: [],
+				}],
 				dialogImageUrl: '',
 				dialogVisible: false
 			}
@@ -87,8 +108,6 @@
 					},
 					// 点击保存按钮上传图片
 					submit2: function (res) {
-						console.log(this.infoForm);
-						console.log(this.form.detail);
 						let that = this
 						this.$refs.upload.submit();
 					},
@@ -103,8 +122,26 @@
 					handelIncrease(step) {
 						console.log("step",step)
 					},
-
+					getalltype(){
+						let chindre={
+							id:'',
+							label:''
+						}
+						let option={
+							id:'',
+							label:'',
+							parentid: '',
+							children:[]
+						}
+						getProducType(0).then(res => {
+							for(i)
+						});
+					}
 				},
+		mounted() {
+
+		}
+
 
 	}
 
