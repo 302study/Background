@@ -24,12 +24,7 @@ let routes = [
         name: '',
         hidden: true
     },
-    {
-        path: '/editProduct',
-        component: editProduct,
-        name: '编辑商品' ,
-        hidden: true
-    },
+
     //{ path: '/main', component: Main },
     {
         path: '/',
@@ -41,6 +36,12 @@ let routes = [
             { path: '/table', component: Table, name: 'Table' },
             { path: '/form', component: Form, name: 'Form' },
             { path: '/user', component: user, name: '列表' },
+            {
+                path: '/editProduct',
+                component: editProduct,
+                name: '编辑商品' ,
+                hidden: true
+            },
 
         ]
     },

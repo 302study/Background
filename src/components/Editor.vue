@@ -49,17 +49,7 @@
     import "quill/dist/quill.bubble.css";
 
     export default {
-        props: {
-            /*编辑器的内容*/
-            value: {
-                type: String
-            },
-            /*图片大小*/
-            maxSize: {
-                type: Number,
-                default: 4000 //kb
-            }
-        },
+        props:["value"],
 
         components: {
             quillEditor
@@ -67,10 +57,10 @@
 
         data() {
             return {
-                content: this.value,
+                content:this.value,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
                 editorOption: {
-                    placeholder: "",
+
                     theme: "snow", // or 'bubble'
                     placeholder: "您想说点什么？",
                     modules: {
@@ -111,6 +101,7 @@
             },
             onEditorFocus() {
                 //获得焦点事件
+                console.log(this.value)
             },
             onEditorChange() {
                 //内容改变事件

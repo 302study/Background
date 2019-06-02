@@ -22,7 +22,7 @@
 					:options="options"
 					:limit="3"
 					:max-height="200"
-					v-model="value"
+					v-model="form.categoryId"
 			/>
 		</el-form-item>
 		<el-form-item label="商品主图">
@@ -31,7 +31,8 @@
 					list-type="picture-card"
 					:on-preview="handlePictureCardPreview"
 					:data="this.form"
-					:auto-upload="false"
+					:on-success="handleAvatarSuccess"
+					:auto-upload="true"
 					ref="upload"
 					:on-remove="handleRemove">
 				<i class="el-icon-plus"></i>
@@ -55,6 +56,7 @@
 
 <script>
 	import {getProducType} from '../../api/api'
+	import {addProduct} from '../../api/api';
 	import Editor from "@/components/Editor";
 	// import the component
 	import Treeselect from '@riophae/vue-treeselect'
@@ -66,6 +68,7 @@
 			Editor,
 			Treeselect ,
 		},
+
 		data() {
 			return {
 				form: {
@@ -74,18 +77,16 @@
 					subtitle: '',
 					price: '',
 					delivery: false,
+					mainImage:'',
+					subImages:[],
 					stock: '',
 					detail: '',
-
+					detail:'',
+					categoryId: null,
 				},
-				value: null,
+
 				// define options
-				options: [{
-					id: 'a',
-					label: 'a',
-					parentid:'',
-					children: [],
-				}],
+				options: [],
 				dialogImageUrl: '',
 				dialogVisible: false
 			}
@@ -97,10 +98,9 @@
 
 				},
 
-
 				methods: {
 					handleRemove(file, fileList) {
-						console.log(file, fileList);
+
 					},
 					handlePictureCardPreview(file) {
 						this.dialogImageUrl = file.url;
@@ -108,8 +108,26 @@
 					},
 					// 点击保存按钮上传图片
 					submit2: function (res) {
-						let that = this
-						this.$refs.upload.submit();
+						this.form.mainImage=this.form.subImages[0]
+						this.$delete(this.form.subImages,0)
+						let sub=JSON.stringify(this.form.subImages)
+						let parm=this.qs.stringify({
+							categoryId:this.form.categoryId,
+							name:this.form.name,
+							subtitle:this.form.subtitle,
+							mainImage:this.form.mainImage,
+							subImages:sub,
+							price:this.form.price,
+							stock:this.form.stock,
+							detail:this.form.detail,
+
+						});
+
+						addProduct(parm).then(res => {
+							let data = []
+							data = res.data
+							let count = 0;
+						});
 					},
 
 					// 图片上传成功后，后台返回图片的路径
@@ -119,27 +137,59 @@
 							this.imgUrl = res.data.imgUrl;
 						}
 					},
-					handelIncrease(step) {
-						console.log("step",step)
+					handleAvatarSuccess(res) {
+						this.form.subImages.push(res.data.url);
+						console.log(this.form.subImages)
 					},
-					getalltype(){
-						let chindre={
-							id:'',
-							label:''
-						}
-						let option={
-							id:'',
-							label:'',
-							parentid: '',
-							children:[]
-						}
-						getProducType(0).then(res => {
-							for(i)
+					handelIncrease(step) {
+						this.form.detail=step
+						console.log("step",this.form.detail)
+					},
+					getalltype() {
+						let parm=this.qs.stringify({
+							categoryId:'0'
 						});
-					}
+						getProducType(parm).then(res => {
+							let data=[]
+							data=res.data
+							let count=0;
+
+							data.forEach((item) => {
+								let temp= {
+									id: '',
+									label: '',
+									parentid:'0',
+									children: [],
+								}
+								//遍历prodAllPrice这个字段，并累加
+								temp.id=item.id
+								temp.label=item.name
+
+								this.options.push(temp)
+								let parm=this.qs.stringify({
+									categoryId:temp.id
+								});
+								getProducType(parm).then(res => {
+									let data=[]
+									data=res.data
+									data.forEach((item) => {
+										let temp = {
+											id: '',
+											label: '',
+										}
+										temp.id=item.id
+										temp.label=item.name
+										this.options[count].children.push(temp)
+									})
+									count=count+1;
+								})
+							});
+
+						});
+					},
 				},
 		mounted() {
-
+			this.getalltype();
 		}
 
 
