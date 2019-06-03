@@ -30,9 +30,10 @@
                     action="/api/manage/product/upload"
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
+                    :on-success="handleAvatarSuccess"
                     :data="this.form"
-                    :auto-upload="false"
-                    :file-list="form.subImages"
+                    :auto-upload="true"
+                    :file-list="fileList"
                     ref="upload"
                     :on-remove="handleRemove">
                 <i class="el-icon-plus"></i>
@@ -42,7 +43,7 @@
             </el-dialog>
         </el-form-item>
         <el-form-item>
-            <Editor v-bind:value="form.detail" @input="handelIncrease"></Editor>
+            <Editor v-bind:vvalue="form.detail" @input="handelIncrease"></Editor>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submit2">立即创建</el-button>
@@ -56,6 +57,7 @@
 
 <script>
     import {getProducType} from '../../api/api'
+    import {addProduct} from '../../api/api'
     import Editor from "@/components/Editor";
     // import the component
     import Treeselect from '@riophae/vue-treeselect'
@@ -70,17 +72,19 @@
         data() {
             return {
                 form: {
+                    id:'',
                     name: '',
                     type:'',
                     subtitle: '',
                     price: '',
                     delivery: false,
-                    mainImag2e:'',
-                    subImage:null,
+                    mainImage:'',
+                    subImages:[],
                     stock: '',
                     detail:'',
                     categoryId: null,
                 },
+                fileList:[],
                 // define options
                 options: [],
                 dialogImageUrl: '',
@@ -106,10 +110,10 @@
             },
             // 点击保存按钮上传图片
             submit2: function (res) {
-                this.form.mainImage=this.form.subImages[0]
-                this.$delete(this.form.subImages,0)
+
                 let sub=JSON.stringify(this.form.subImages)
                 let parm=this.qs.stringify({
+                    id:this.form.id,
                     categoryId:this.form.categoryId,
                     name:this.form.name,
                     subtitle:this.form.subtitle,
@@ -122,9 +126,10 @@
                 });
 
                 addProduct(parm).then(res => {
-                    let data = []
-                    data = res.data
-                    let count = 0;
+                    console.log(res.status)
+                    if(res.status===10001){
+                        alert(res.msg)
+                    }
                 });
             },
 
@@ -135,8 +140,12 @@
                     this.imgUrl = res.data.imgUrl;
                 }
             },
+            handleAvatarSuccess(res) {
+                this.form.subImages.push(res.data.url);
+                console.log(this.form.subImages)
+            },
             handelIncrease(step) {
-                console.log("step",step)
+
                 this.form.detail=step
             },
             getParams(){
@@ -144,18 +153,31 @@
                     productId : sessionStorage.getItem("productId"),
                     });
                 getProductDetail(id).then((res) => {
-                    this.form.detail=res.data.detail;
-                    this.form.name=res.data.name;
+                    this.form=res.data;
+                    console.log(this.form.subImages)
+                    let temp={
+                        name:this.form.mainImage,
+                        url:this.form.mainImage
+                    }
+
+                    this.fileList.push(temp)
+                    this.form.subImages.forEach((item) => {
+                        let temp={
+                            name:item,
+                            url:item
+                        }
+                        this.fileList.push(temp)
+                    })
                 });
             },
-            getalltype()
-            {
+            getalltype() {
                 let parm=this.qs.stringify({
                     categoryId:'0'
                 });
                 getProducType(parm).then(res => {
                     let data=[]
                     data=res.data
+                    data.sort()
                     let count=0;
 
                     data.forEach((item) => {
@@ -165,14 +187,14 @@
                             parentid:'0',
                             children: [],
                         }
-                        //遍历prodAllPrice这个字段，并累加
+
                         temp.id=item.id
                         temp.label=item.name
-
                         this.options.push(temp)
                         let parm=this.qs.stringify({
                             categoryId:temp.id
                         });
+
                         getProducType(parm).then(res => {
                             let data=[]
                             data=res.data
@@ -185,14 +207,16 @@
                                 temp.label=item.name
                                 this.options[count].children.push(temp)
                             })
+
                             count=count+1;
                         })
                     });
 
                 });
-            }
+            },
         },
         mounted() {
+
             this.getalltype();
             this.getParams();
         },

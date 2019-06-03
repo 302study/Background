@@ -124,9 +124,10 @@
 						});
 
 						addProduct(parm).then(res => {
-							let data = []
-							data = res.data
-							let count = 0;
+							console.log(res.status)
+							if(res.status===10001){
+								alert(res.msg)
+							}
 						});
 					},
 
@@ -146,19 +147,6 @@
 						console.log("step",this.form.detail)
 					},
 
-					getalltype(){
-						let chindre={
-							id:'',
-							label:''
-						}
-						let option={
-							id:'',
-							label:'',
-							parentid: '',
-							children:[]
-						}
-
-					},
 
 					getalltype() {
 						let parm=this.qs.stringify({
@@ -167,6 +155,7 @@
 						getProducType(parm).then(res => {
 							let data=[]
 							data=res.data
+							data.sort()
 							let count=0;
 
 							data.forEach((item) => {
@@ -176,14 +165,14 @@
 									parentid:'0',
 									children: [],
 								}
-								//遍历prodAllPrice这个字段，并累加
+
 								temp.id=item.id
 								temp.label=item.name
-
 								this.options.push(temp)
 								let parm=this.qs.stringify({
 									categoryId:temp.id
 								});
+
 								getProducType(parm).then(res => {
 									let data=[]
 									data=res.data
@@ -196,6 +185,7 @@
 										temp.label=item.name
 										this.options[count].children.push(temp)
 									})
+
 									count=count+1;
 								})
 							});

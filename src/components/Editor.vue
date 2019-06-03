@@ -49,15 +49,26 @@
     import "quill/dist/quill.bubble.css";
 
     export default {
-        props:["value"],
+        props:{
+            vvalue:{
+                type:String,
 
+            }
+        },
+        watch: {
+            immediate: true,    // 这句重要
+            vvalue(newValue, oldValue) {
+                this.content=newValue;
+
+            }
+        },
         components: {
-            quillEditor
+            quillEditor,
         },
 
         data() {
             return {
-                content:this.value,
+                content:this.vvalue,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
                 editorOption: {
 
@@ -101,7 +112,7 @@
             },
             onEditorFocus() {
                 //获得焦点事件
-                console.log(this.value)
+
             },
             onEditorChange() {
                 //内容改变事件
@@ -139,7 +150,7 @@
                 this.quillUpdateImg = false;
                 this.$message.error("图片插入失败");
             }
-        }
+        },
     };
 </script>
 
