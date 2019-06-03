@@ -133,9 +133,7 @@
 							parentid: '',
 							children:[]
 						}
-						getProducType(0).then(res => {
-							for(i)
-						});
+
 					}
 				},
 		mounted() {
