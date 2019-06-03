@@ -72,7 +72,7 @@
 	import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
 	import { getProductList} from '../../api/api';
-
+	import { offProduct} from '../../api/api';
 	export default {
 		data() {
 			return {
@@ -118,7 +118,7 @@
 					this.products = res.data.data.list;
                     this.currentChangePage(this.products,this.currentPage)
 					this.total=res.data.data.total;
-
+					console.log(this.products)
 					this.listLoading = false;
 					//NProgress.done();
 				});
@@ -144,14 +144,21 @@
 				}
 			},
             handleEdit(row){
+				sessionStorage.setItem("productId",row.id);
                 this.$router.push({
                     path: '/editProduct',
-                    // name: 'mallList',
-                    query: {
-                        mallCode: row
-                    }
                 })
             },
+			handleDel(index,row){
+				let off=this.qs.stringify({
+					productId:row.id,
+					status:2
+				})
+				offProduct(off).then((res) => {
+
+				});
+			},
+
 
 		},
 		mounted() {
