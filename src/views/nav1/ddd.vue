@@ -27,12 +27,13 @@
 		</el-form-item>
 		<el-form-item label="商品主图">
 			<el-upload
-					action="/api/manage/product/upload"
+					action="uploadHead"
 					list-type="picture-card"
 					:on-preview="handlePictureCardPreview"
 					:data="this.form"
 					:on-success="handleAvatarSuccess"
 					:auto-upload="true"
+					:http-request="myUpload"
 					ref="upload"
 					:on-remove="handleRemove">
 				<i class="el-icon-plus"></i>
@@ -55,6 +56,7 @@
 </template>
 
 <script>
+	import {uploadImage} from '../../api/api'
 	import {getProducType} from '../../api/api'
 	import {addProduct} from '../../api/api';
 	import Editor from "@/components/Editor";
@@ -100,7 +102,15 @@
 
 				methods: {
 					handleRemove(file, fileList) {
+						for(var i = 0;i<this.form.subImages.length;i=i+1){
+							if(this.form.subImages[i]==file.name){
+								this.$delete(this.form.subImages,i)
+							}
+						}
+						if(this.form.mainImage==file.name){
+							this.form.mainImage="";
 
+						}
 					},
 					handlePictureCardPreview(file) {
 						this.dialogImageUrl = file.url;
@@ -120,6 +130,7 @@
 							price:this.form.price,
 							stock:this.form.stock,
 							detail:this.form.detail,
+							status:2,
 
 						});
 
@@ -130,7 +141,21 @@
 							}
 						});
 					},
+					myUpload(content) {
+						let formData = new FormData();
+						formData.append('file',content.file); // 'file[]' 代表数组 其中`file`是可变的
 
+						uploadImage(formData).then(res=>{
+
+							if (res.status == 10001) {
+								this.imgUrl = res.data.imgUrl;
+							}
+							this.form.subImages.push(res.data.url);
+							console.log(this.form.subImages)
+						}).catch(err=>{
+							console.log(err)
+						})
+					},
 					// 图片上传成功后，后台返回图片的路径
 					onSuccess: function (res) {
 						// console.log(res);
@@ -157,7 +182,7 @@
 							data=res.data
 							data.sort()
 							let count=0;
-
+							this.options=(data)
 							data.forEach((item) => {
 								let temp= {
 									id: '',
@@ -168,22 +193,31 @@
 
 								temp.id=item.id
 								temp.label=item.name
-								this.options.push(temp)
+
 								let parm=this.qs.stringify({
 									categoryId:temp.id
 								});
 
 								getProducType(parm).then(res => {
+
+									console.log(this.options[count].name+"的子目录是"+res.data[0].name)
 									let data=[]
 									data=res.data
-									data.forEach((item) => {
+
+									data.forEach((data) => {
 										let temp = {
 											id: '',
 											label: '',
 										}
-										temp.id=item.id
-										temp.label=item.name
-										this.options[count].children.push(temp)
+										temp.id=data.id
+										temp.label=data.name
+										for(var i=0;i<this.options.length;i++)
+										{
+											if(item.name==this.options[i].name){
+												this.options[i].children.push(temp)
+											}
+										}
+
 									})
 
 									count=count+1;

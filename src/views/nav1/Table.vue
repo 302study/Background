@@ -41,9 +41,10 @@
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="150">
-				<template scope="scope">
+				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)" v-if="scope.row.status==1">下架</el-button>
+					<el-button type="danger" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.status==2">上架</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -74,6 +75,7 @@
 	import { getProductList} from '../../api/api';
 	import { offProduct} from '../../api/api';
 	export default {
+		inject:['reload'],
 		data() {
 			return {
 				tempList:[],
@@ -155,7 +157,18 @@
 					status:2
 				})
 				offProduct(off).then((res) => {
-
+					alert("下架成功");
+					this.reload();
+				});
+			},
+			handleAdd(index,row){
+				let off=this.qs.stringify({
+					productId:row.id,
+					status:1
+				})
+				offProduct(off).then((res) => {
+					alert("上架成功");
+					this.reload();
 				});
 			},
 

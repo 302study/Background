@@ -23,8 +23,8 @@
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
-          checkPass: '123456'
+          account: '',
+          checkPass: '',
         },
         rules2: {
           account: [
@@ -51,10 +51,10 @@
             this.logining = true;
             //NProgress.start();
             let post=this.qs.stringify({
-              username: this.ruleForm2.account,
+              administrator: this.ruleForm2.account,
               password: this.ruleForm2.checkPass
             });
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+            var loginParams = { administrator: this.ruleForm2.account, password: this.ruleForm2.checkPass };
             requestLogin(post).then(data => {
               this.logining = false;
               //NProgress.done();

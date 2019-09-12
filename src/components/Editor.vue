@@ -3,11 +3,12 @@
         <!-- 图片上传组件辅助-->
         <el-upload
                 class="avatar-uploader"
-                :action="serverUrl"
+                action="uploadHead"
                 name="img"
                 :headers="header"
                 :show-file-list="false"
                 :on-success="uploadSuccess"
+                :http-request="myUpload"
                 :on-error="uploadError"
                 :before-upload="beforeUpload">
         </el-upload>
@@ -25,6 +26,8 @@
 </template>
 <script>
     // 工具栏配置
+    import {uploadImage} from "../api/api";
+
     const toolbarOptions = [
         ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
         ["blockquote", "code-block"], // 引用  代码块
@@ -99,9 +102,9 @@
                         }
                     }
                 },
-                serverUrl: "api/manage/product/richtext_img_upload", // 这里写你要上传的图片服务器地址
+                serverUrl: "http://nginx.wannarich.com/api/manage/product/upload", // 这里写你要上传的图片服务器地址
                 header: {
-                    // token: sessionStorage.token
+                     token: sessionStorage.token
                 } // 有的图片服务器要求请求头需要有token
             };
         },
@@ -123,6 +126,35 @@
             beforeUpload() {
                 // 显示loading动画
                 this.quillUpdateImg = true;
+            },
+            myUpload(content) {
+                let formData = new FormData();
+                formData.append('file',content.file); // 'file[]' 代表数组 其中`file`是可变的
+
+                uploadImage(formData).then(res=>{
+                    console.log(res);
+                    console.log(content.file)
+                    // res为图片服务器返回的数据
+                    // 获取富文本组件实例
+                    let quill = this.$refs.myQuillEditor.quill;
+                    // 如果上传成功
+                    if (res.status ===10001) {
+                        // 获取光标所在位置
+                        let length = quill.getSelection().index;
+                        // 插入图片  res.url为服务器返回的图片地址
+                        quill.insertEmbed(length, "image", res.data.url);
+                        // 调整光标到最后
+                        quill.setSelection(length + 1);
+                    } else {
+                        this.$message.error("图片插入失败");
+                    }
+                    // loading动画消失
+                    this.quillUpdateImg = false;
+                }).catch(err=>{
+                    // loading动画消失
+                    this.quillUpdateImg = false;
+                    this.$message.error("图片插入失败");
+                })
             },
             uploadSuccess(res, file) {
                 console.log(res);

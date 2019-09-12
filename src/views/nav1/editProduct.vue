@@ -27,12 +27,13 @@
         </el-form-item>
         <el-form-item label="商品主图">
             <el-upload
-                    action="/api/manage/product/upload"
+                    action="uploadHead"
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
                     :data="this.form"
                     :auto-upload="true"
+                    :http-request="myUpload"
                     :file-list="fileList"
                     ref="upload"
                     :on-remove="handleRemove">
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-    import {getProducType} from '../../api/api'
+    import {getProducType, uploadImage} from '../../api/api'
     import {addProduct} from '../../api/api'
     import Editor from "@/components/Editor";
     // import the component
@@ -102,7 +103,15 @@
 
         methods: {
             handleRemove(file, fileList) {
-                console.log(file, fileList);
+                for(var i = 0;i<this.form.subImages.length;i=i+1){
+                    if(this.form.subImages[i]==file.name){
+                        this.$delete(this.form.subImages,i)
+                    }
+                }
+                if(this.form.mainImage==file.name){
+                    this.form.mainImage="";
+
+                }
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
@@ -132,7 +141,26 @@
                     }
                 });
             },
+            myUpload(content) {
+                let formData = new FormData();
+                formData.append('file',content.file); // 'file[]' 代表数组 其中`file`是可变的
 
+                uploadImage(formData).then(res=>{
+
+                    if (res.status == 10001) {
+                        this.imgUrl = res.data.url;
+                    }
+                    if(this.form.mainImage==""){
+                        this.form.mainImage=res.data.url;
+                    }
+                    else{
+                        this.form.subImages.push(res.data.url);
+                    }
+
+                }).catch(err=>{
+                    console.log(err)
+                })
+            },
             // 图片上传成功后，后台返回图片的路径
             onSuccess: function (res) {
                 // console.log(res);

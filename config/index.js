@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/vue-admin/',
+    assetsPublicPath: './',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -26,12 +26,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: "http://www.awei.com",//后端接口地址
-        changeOrigin: true,//是否允许跨越
+        target: "localhost",//后端接口地址
+        changeOrigin:true,
         pathRewrite:{
           '^/api':''
         }
-      }},
+      },
+
+    },
     env: require('./dev.env'),
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8088,

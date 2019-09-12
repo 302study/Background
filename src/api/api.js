@@ -7,7 +7,7 @@ let config = {
     }
 }
 
-export const requestLogin = params => { return axios.post(`user/login`, params,config).then(res => res.data); };
+export const requestLogin = params => { return axios.post(`MassController/login`, params,config).then(res => res.data); };
 
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 
@@ -25,3 +25,4 @@ export const getProducType = params => { return axios.post(`manage/category/get_
 export const addProduct = params => { return axios.post(`manage/product/save`, params,config ).then(res => res.data); };
 export const offProduct = params => { return axios.post(`manage/product/set_sale_status`, params,config ).then(res => res.data); };
 export const getProductDetail = params => { return axios.post(`manage/product/detail`, params,config ).then(res => res.data); };
+export const uploadImage = params => { return axios.post(`manage/product/upload`, params,config ).then(res => res.data); };
