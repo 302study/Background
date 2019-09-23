@@ -22,29 +22,26 @@
 		<!--列表-->
 		<el-table :data="tempList" highlight-current-row v-loading="listLoading" style="width: 100%;"
 				  :default-sort="{prop: 'date', order: 'descending'}">
-			<el-table-column type="selection" width="55">
+			<el-table-column type="selection" width="75">
 			</el-table-column>
-			<el-table-column type="index" width="60">
+			<el-table-column type="index" width="180">
 			</el-table-column>
-			<el-table-column  :show-overflow-tooltip="true" prop="name" label="商品名称" width="120" class="fold" sortable>
+			<el-table-column  :show-overflow-tooltip="true" prop="name" label="社团名称" width="240" class="fold" sortable>
 			</el-table-column>
-			<el-table-column :show-overflow-tooltip="true" prop="subtitle" label="标题" width="100" sortable>
+			<el-table-column :show-overflow-tooltip="true" prop="number" label="人数" width="220" sortable>
 			</el-table-column>
-			<el-table-column prop="price" label="价格" width="100" sortable>
+			<el-table-column prop="leader" label="团长" width="220" sortable>
 			</el-table-column>
-			<el-table-column prop="stock" label="库存" width="120" sortable>
+			<el-table-column prop="priority" label="优先级" width="240" sortable>
 			</el-table-column>
-			<el-table-column prop="status" label="状态" min-width="180" sortable>
-				<template slot-scope="scope">
-					<span>{{scope.row.status==1?'已上架':"未上架"}}</span>
-					<!-- <span v-if=‘scope.row.state==0‘>关闭</span> -->
-				</template>
+			<el-table-column >
+
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)" v-if="scope.row.status==1">下架</el-button>
-					<el-button type="danger" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.status==2">上架</el-button>
+					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+<!--					<el-button type="danger" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.status==2">上架</el-button>-->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -70,8 +67,7 @@
 </template>
 
 <script>
-	import util from '../../common/js/util'
-	//import NProgress from 'nprogress'
+
 	import { getProductList} from '../../api/api';
 	import { offProduct} from '../../api/api';
 	export default {
@@ -115,9 +111,10 @@
 				this.listLoading = true;
 				//NProgress.start();
 				getProductList(para).then((res) => {
-					this.total = res.data.total;
 
-					this.products = res.data.data.list;
+
+					this.products = res.data.data;
+					this.total = res.data.total;
                     this.currentChangePage(this.products,this.currentPage)
 					this.total=res.data.data.total;
 					console.log(this.products)

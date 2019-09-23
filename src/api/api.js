@@ -20,7 +20,7 @@ export const batchRemoveUser = params => { return axios.get(`${base}/user/batchr
 export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
-export const getProductList = params => { return axios.get(`manage/product/list`, { params: params }); };
+export const getProductList = params => { return axios.get(`MassController/selectMass`, { params: params }); };
 export const getProducType = params => { return axios.post(`manage/category/get_category`, params,config ).then(res => res.data); };
 export const addProduct = params => { return axios.post(`manage/product/save`, params,config ).then(res => res.data); };
 export const offProduct = params => { return axios.post(`manage/product/set_sale_status`, params,config ).then(res => res.data); };

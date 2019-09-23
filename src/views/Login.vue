@@ -59,13 +59,13 @@
               this.logining = false;
               //NProgress.done();
               let { msg, code, user } = data;
-              if (data.status !== 10001) {
+              if (data.status !== 11) {
                 this.$message({
                   message: msg,
                   type: 'error'
                 });
               } else {
-                sessionStorage.setItem('user', JSON.stringify(data.data.username));
+                sessionStorage.setItem('user', JSON.stringify(this.ruleForm2.account));
                 this.$router.push({ path: '/table' });
               }
             });
