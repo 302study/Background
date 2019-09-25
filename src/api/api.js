@@ -21,8 +21,8 @@ export const editUser = params => { return axios.get(`${base}/user/edit`, { para
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 export const getProductList = params => { return axios.get(`MassController/selectMass`, { params: params }); };
-export const getProducType = params => { return axios.post(`manage/category/get_category`, params,config ).then(res => res.data); };
-export const addProduct = params => { return axios.post(`manage/product/save`, params,config ).then(res => res.data); };
+export const getMassUser = params => { return axios.post(`MassController/selectUser`, params,config ).then(res => res.data); };
+export const editMass = params => { return axios.post(`MassController/update`, params,config ).then(res => res.data); };
 export const offProduct = params => { return axios.post(`manage/product/set_sale_status`, params,config ).then(res => res.data); };
-export const getProductDetail = params => { return axios.post(`manage/product/detail`, params,config ).then(res => res.data); };
+export const getProductDetail = params => { return axios.post(`MassController/selectByPrimaryKey`, params,config ).then(res => res.data); };
 export const uploadImage = params => { return axios.post(`manage/product/upload`, params,config ).then(res => res.data); };

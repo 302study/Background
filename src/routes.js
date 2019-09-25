@@ -38,7 +38,7 @@ let routes = [
             {
                 path: '/editProduct',
                 component: editProduct,
-                name: '编辑商品' ,
+                name: '编辑社团' ,
                 hidden: true
             },
 

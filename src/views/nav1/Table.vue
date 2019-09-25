@@ -143,7 +143,7 @@
 				}
 			},
             handleEdit(row){
-				sessionStorage.setItem("productId",row.id);
+				sessionStorage.setItem("massId",row.id);
                 this.$router.push({
                     path: '/editProduct',
                 })
@@ -151,25 +151,13 @@
 			handleDel(index,row){
 				let off=this.qs.stringify({
 					productId:row.id,
-					status:2
+					state:1
 				})
 				offProduct(off).then((res) => {
-					alert("下架成功");
+					alert("删除成功");
 					this.reload();
 				});
 			},
-			handleAdd(index,row){
-				let off=this.qs.stringify({
-					productId:row.id,
-					status:1
-				})
-				offProduct(off).then((res) => {
-					alert("上架成功");
-					this.reload();
-				});
-			},
-
-
 		},
 		mounted() {
 			this.getUsers();

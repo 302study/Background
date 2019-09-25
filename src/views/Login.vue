@@ -47,19 +47,15 @@
         var _this = this;
         this.$refs.ruleForm2.validate((valid) => {
           if (valid) {
-            //_this.$router.replace('/table');
             this.logining = true;
-            //NProgress.start();
             let post=this.qs.stringify({
               administrator: this.ruleForm2.account,
               password: this.ruleForm2.checkPass
             });
-            var loginParams = { administrator: this.ruleForm2.account, password: this.ruleForm2.checkPass };
             requestLogin(post).then(data => {
               this.logining = false;
-              //NProgress.done();
-              let { msg, code, user } = data;
-              if (data.status !== 11) {
+              let { msg, status, user } = data;
+              if (data.status != 11) {
                 this.$message({
                   message: msg,
                   type: 'error'
