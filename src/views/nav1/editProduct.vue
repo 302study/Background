@@ -3,13 +3,19 @@
         <el-form-item label="社团名称">
             <el-input v-model="form.name"></el-input>
         </el-form-item>
+        <el-form-item label="团长">
+            <el-input v-model="form.subtitle"></el-input>
 
         <el-form-item label="社团人数">
             <el-input v-model="form.number"></el-input>
         </el-form-item>
+        <el-form-item label="当前人数">
+            <el-input v-model="form.price"></el-input>
         <el-form-item label="团长">
             <el-input v-model="form.leader"></el-input>
         </el-form-item>
+        <!--<el-form-item label="商品库存">
+            <el-input v-model="form.stock"></el-input>
         <el-form-item label="优先级">
             <el-input v-model="form.priority"></el-input>
         </el-form-item>
@@ -26,6 +32,26 @@
                     v-model="form.leader_userId"
             />
         </el-form-item>
+        <el-form-item label="商品主图">
+            <el-upload
+                    action="uploadHead"
+                    list-type="picture-card"
+                    :on-preview="handlePictureCardPreview"
+                    :on-success="handleAvatarSuccess"
+                    :data="this.form"
+                    :auto-upload="true"
+                    :http-request="myUpload"
+                    :file-list="fileList"
+                    ref="upload"
+                    :on-remove="handleRemove">
+                <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+        </el-form-item> -->
+        <el-form-item label="社团介绍">
+            <Editor v-bind:vvalue="form.detail" @input="handelIncrease"></Editor>
         <el-form-item label="社团介绍">
             <Editor v-bind:vvalue="form.introduction" @input="handelIncrease"></Editor>
         </el-form-item>
