@@ -1,15 +1,15 @@
 <template>
     <el-form ref="form" :model="form" label-width="80px" @submit.prevent="onSubmit" style="margin:20px;width:60%;min-width:600px;">
-        <el-form-item label="商品名称">
+        <el-form-item label="社团名称">
             <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="副标题">
+        <el-form-item label="团长">
             <el-input v-model="form.subtitle"></el-input>
         </el-form-item>
-        <el-form-item label="商品价格">
+        <el-form-item label="当前人数">
             <el-input v-model="form.price"></el-input>
         </el-form-item>
-        <el-form-item label="商品库存">
+        <!--<el-form-item label="商品库存">
             <el-input v-model="form.stock"></el-input>
         </el-form-item>
         <el-form-item label="商品种类">
@@ -42,8 +42,8 @@
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
-        </el-form-item>
-        <el-form-item>
+        </el-form-item> -->
+        <el-form-item label="社团介绍">
             <Editor v-bind:vvalue="form.detail" @input="handelIncrease"></Editor>
         </el-form-item>
         <el-form-item>

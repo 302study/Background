@@ -26,13 +26,15 @@
 			</el-table-column>
 			<el-table-column type="index" width="180">
 			</el-table-column>
-			<el-table-column  :show-overflow-tooltip="true" prop="name" label="社团名称" width="240" class="fold" sortable>
+			<el-table-column  :show-overflow-tooltip="true" prop="massName" label="社团名称" width="220" class="fold" sortable>
 			</el-table-column>
-			<el-table-column :show-overflow-tooltip="true" prop="number" label="人数" width="220" sortable>
+			<el-table-column :show-overflow-tooltip="true" prop="userName" label="人员名称" width="180" sortable>
 			</el-table-column>
-			<el-table-column prop="leader" label="团长" width="220" sortable>
+			<el-table-column prop="tel" label="电话号码" width="200" sortable>
 			</el-table-column>
-			<el-table-column prop="priority" label="优先级" width="240" sortable>
+			<el-table-column prop="email" label="邮箱" width="200" sortable>
+			</el-table-column>
+			<el-table-column prop="forbiddenWord" label="是否被禁言" width="140" sortable>
 			</el-table-column>
 			<el-table-column >
 
