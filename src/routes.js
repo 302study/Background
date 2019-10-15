@@ -4,13 +4,14 @@ import Home from './views/Home.vue'
 import Main from './views/Main.vue'
 import Table from './views/nav1/Table.vue'
 import peopleManage from './views/nav1/peopleManage.vue'
-import Form from './views/nav1/ddd.vue'
+import Form from './views/nav1/addMass.vue'
 import user from './views/nav1/user.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
 import echarts from './views/charts/echarts.vue'
-import editProduct from './views/nav1/editProduct'
+import editMass from './views/nav1/editMass'
+import addMass from "./views/nav1/addMass";
 let routes = [
     {
         path: '/login',
@@ -37,8 +38,14 @@ let routes = [
             { path: '/form', component: peopleManage, name: '社团管理' },
 
             {
-                path: '/editProduct',
-                component: editProduct,
+                path: '/editMass',
+                component: editMass,
+                name: '编辑社团' ,
+                hidden: true
+            },
+            {
+                path: '/addMass',
+                component: addMass,
                 name: '编辑社团' ,
                 hidden: true
             },

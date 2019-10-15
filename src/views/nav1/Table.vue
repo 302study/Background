@@ -12,7 +12,7 @@
 					<el-button type="primary" v-on:click="">查询</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="">新增</el-button>
+					<el-button type="primary" @click="jump_addMass">新增</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -145,7 +145,7 @@
             handleEdit(row){
 				sessionStorage.setItem("massId",row.id);
                 this.$router.push({
-                    path: '/editProduct',
+                    path: '/editMass',
                 })
             },
 			handleDel(index,row){
@@ -158,6 +158,10 @@
 					this.reload();
 				});
 			},
+			jump_addMass(){
+				this.$router.push({ path:'/addMass'  })
+
+			}
 		},
 		mounted() {
 			this.getUsers();
