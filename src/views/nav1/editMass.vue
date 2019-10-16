@@ -13,31 +13,13 @@
             <el-input type="number" v-model="form.priority"></el-input>
         </el-form-item>
 
-        <!--<el-form-item label="商品库存">
-            <el-input v-model="form.stock"></el-input>
-        <el-form-item label="优先级">
-            <el-input v-model="form.priority"></el-input>
-        </el-form-item>
-        <el-form-item label="团长">
-            <treeselect
-                    name="demo"
-                    :multiple="false"
-                    :searchable="true"
-                    :open-on-click="true"
-                    :disable-branch-nodes="true"
-                    :options="options"
-                    :limit="3"
-                    :max-height="200"
-                    v-model="form.leader_userId"
-            />
-        </el-form-item>
-        <el-form-item label="商品主图">
+        <el-form-item label="社团照片">
             <el-upload
-                    action="uploadHead"
+                    action="/api/MassController/upload"
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
-                    :data="this.form"
+
                     :auto-upload="true"
                     :http-request="myUpload"
                     :file-list="fileList"
@@ -48,7 +30,8 @@
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
-        </el-form-item> -->
+        </el-form-item>
+
         <el-form-item label="团长">
             <treeselect
                     name="demo"

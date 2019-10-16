@@ -25,4 +25,4 @@ export const getMassUser = params => { return axios.post(`MassController/selectU
 export const editMass = params => { return axios.post(`MassController/update`, params,config ).then(res => res.data); };
 export const delMass = params => { return axios.post(`MassController/update`, params,config ).then(res => res.data); };
 export const getProductDetail = params => { return axios.post(`MassController/selectByPrimaryKey`, params,config ).then(res => res.data); };
-export const uploadImage = params => { return axios.post(`manage/product/upload`, params,config ).then(res => res.data); };
+export const uploadImage = params => { return axios.post(`MassController/imageUpload`, params,config ).then(res => res.data); };
