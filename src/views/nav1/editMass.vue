@@ -6,9 +6,12 @@
 
 
         <el-form-item label="社团人数">
-            <el-input v-model="form.number"></el-input>
+            <el-input type="number" v-model="form.number"></el-input>
         </el-form-item>
 
+        <el-form-item label="优先级">
+            <el-input type="number" v-model="form.priority"></el-input>
+        </el-form-item>
 
         <!--<el-form-item label="商品库存">
             <el-input v-model="form.stock"></el-input>
@@ -112,7 +115,6 @@
             loading() {
                 return this.$store.state.loading;
             },
-
         },
 
 

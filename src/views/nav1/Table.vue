@@ -22,26 +22,31 @@
 		<!--列表-->
 		<el-table :data="tempList" highlight-current-row v-loading="listLoading" style="width: 100%;"
 				  :default-sort="{prop: 'date', order: 'descending'}">
-			<el-table-column type="selection" width="75">
+			<el-table-column type="selection" min-width="5%">
 			</el-table-column>
-			<el-table-column type="index" width="180">
+			<el-table-column type="index" min-width="5%">
 			</el-table-column>
-			<el-table-column  :show-overflow-tooltip="true" prop="name" label="社团名称" width="240" class="fold" sortable>
+			<el-table-column  :show-overflow-tooltip="true" prop="name" label="社团名称" min-width="15%" class="fold" sortable>
 			</el-table-column>
-			<el-table-column :show-overflow-tooltip="true" prop="number" label="人数" width="220" sortable>
+			<el-table-column :show-overflow-tooltip="true" prop="number" label="人数" min-width="15%" sortable>
 			</el-table-column>
-			<el-table-column prop="leader" label="团长" width="220" sortable>
+			<el-table-column prop="leader" label="团长" min-width="15%" sortable>
 			</el-table-column>
-			<el-table-column prop="priority" label="优先级" width="240" sortable>
+            <el-table-column prop="state" label="状态" min-width="15%" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.state===1?'已上架':"未上架"}}</span>
+                    <!-- <span v-if=‘scope.row.state==0‘>关闭</span> -->
+                </template>
+            </el-table-column>
+			<el-table-column prop="priority" label="优先级" min-width="15%" sortable>
 			</el-table-column>
-			<el-table-column >
-
-			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column label="操作" min-width="25%">
 				<template slot-scope="scope">
+                    <el-button type="primary" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.state===2">上架</el-button>
+                    <el-button type="primary" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.state===0">下架</el-button>
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-<!--					<el-button type="danger" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.status==2">上架</el-button>-->
+
 				</template>
 			</el-table-column>
 		</el-table>
@@ -163,6 +168,7 @@
 
 			}
 		},
+
 		mounted() {
 			this.getUsers();
 
