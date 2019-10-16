@@ -34,7 +34,7 @@
 			</el-table-column>
             <el-table-column prop="state" label="状态" min-width="15%" sortable>
                 <template slot-scope="scope">
-                    <span>{{scope.row.state===1?'已上架':"未上架"}}</span>
+                    <span>{{scope.row.state===0?'已上架':"未上架"}}</span>
                     <!-- <span v-if=‘scope.row.state==0‘>关闭</span> -->
                 </template>
             </el-table-column>
@@ -42,10 +42,10 @@
 			</el-table-column>
 			<el-table-column label="操作" min-width="25%">
 				<template slot-scope="scope">
-                    <el-button type="primary" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.state===2">上架</el-button>
-                    <el-button type="primary" size="small" @click="handleAdd(scope.$index, scope.row)" v-if="scope.row.state===0">下架</el-button>
+                    <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,0)" v-if="scope.row.state===2">上架</el-button>
+                    <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,2)" v-if="scope.row.state===0">下架</el-button>
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+					<el-button type="danger" size="small" v-if="scope.row.state===2" @click="handleDel(scope.$index, scope.row,1)">删除</el-button>
 
 				</template>
 			</el-table-column>
@@ -74,7 +74,7 @@
 <script>
 
 	import { getProductList} from '../../api/api';
-	import { offProduct} from '../../api/api';
+	import { delMass} from '../../api/api';
 	export default {
 		inject:['reload'],
 		data() {
@@ -153,13 +153,15 @@
                     path: '/editMass',
                 })
             },
-			handleDel(index,row){
+			handleDel(index,row,state){
 				let off=this.qs.stringify({
-					productId:row.id,
-					state:1
+					id:row.id,
+					state:state
 				})
-				offProduct(off).then((res) => {
-					alert("删除成功");
+                delMass(off).then((res) => {
+					if(state===0)alert("上架成功");
+                    if(state===1)alert("删除成功");
+                    if(state===2)alert("下架成功");
 					this.reload();
 				});
 			},
