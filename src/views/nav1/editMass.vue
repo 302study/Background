@@ -19,9 +19,9 @@
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
-
                     :auto-upload="true"
                     :http-request="myUpload"
+                    :data="this.form"
                     :file-list="fileList"
                     ref="upload"
                     :on-remove="handleRemove">
