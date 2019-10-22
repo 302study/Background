@@ -20,7 +20,7 @@
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
                     :auto-upload="true"
-                    :http-request="myUpload"
+
                     :data="this.form"
                     :file-list="fileList"
                     ref="upload"
@@ -42,7 +42,7 @@
                     :options="options"
                     :limit="3"
                     :max-height="200"
-                    v-model="form.leader_userId"
+                    v-model="form.leaderUserid"
             />
         </el-form-item>
         <el-form-item label="社团介绍">
@@ -81,8 +81,10 @@
                     number:'',
                     leader:null,
                     priority:'',
-                    leader_userId:null,
+                    leaderUserid:null,
+                    photo:[],
                 },
+
                 fileList:[],
                 // define options
                 options: [ {
@@ -103,14 +105,10 @@
 
         methods: {
             handleRemove(file, fileList) {
-                for(var i = 0;i<this.form.subImages.length;i=i+1){
-                    if(this.form.subImages[i]==file.name){
-                        this.$delete(this.form.subImages,i)
+                for(var i = 0;i<this.form.photo.length;i=i+1){
+                    if(this.form.photo[i]==file.name){
+                        this.$delete(this.form.photo,i)
                     }
-                }
-                if(this.form.mainImage==file.name){
-                    this.form.mainImage="";
-
                 }
             },
             handlePictureCardPreview(file) {
@@ -126,7 +124,8 @@
                     number:this.form.number,
                     leader:this.form.leader,
                     priority:this.form.priority,
-                    leader_userId:this.form.leader_userId
+                    leaderUserid:this.form.leaderUserid,
+                    photo:this.form.photo.toString()
                 });
 
                 editMass(parm).then(res => {
@@ -135,15 +134,11 @@
                     }
                 });
             },
-            // 图片上传成功后，后台返回图片的路径
-            onSuccess: function (res) {
 
-                if (res.status == 200) {
-                    this.imgUrl = res.data.imgUrl;
-                }
-            },
             handleAvatarSuccess(res) {
-                this.form.subImages.push(res.data.url);
+
+                console.log(this.form.photo);
+                this.form.photo.push(res.data);
 
             },
             handelIncrease(step) {
@@ -155,33 +150,36 @@
                     id : sessionStorage.getItem("massId"),
                     });
                 getProductDetail(id).then((res) => {
+                    this.form.photo=[];
                     this.form=res.data;
-                });
-
-
-            },
-            getalltype() {
-                let parm=this.qs.stringify({
-                    mass_id:1
-                });
-                getMassUser(parm).then(res => {
-                    let data=[];
-                    data=res.data;
-                    data.forEach((item) => {
-                        let temp= {
-                            id: '',
-                            name: '',
-                            parentid:'0',
-                            children: [],
-                        };
-                        temp.id=item.id;
-                        temp.name=item.name;
-                        temp=this.normalizer(temp);
-                        this.options.push(temp);
+                    let image= {
+                        name: 'name',
+                        url:this.form.photo,
+                    };
+                    this.fileList.push(image);
+                    console.log(this.fileList)
+                    let parm=this.qs.stringify({
+                        mass_id:this.form.id,
+                    });
+                    getMassUser(parm).then(res => {
+                        let data=[];
+                        data=res.data;
+                        data.forEach((item) => {
+                            let temp= {
+                                id: '',
+                                name: '',
+                                parentid:'0',
+                                children: [],
+                            };
+                            temp.id=item.id;
+                            temp.name=item.name;
+                            temp=this.normalizer(temp);
+                            this.options.push(temp);
                         });
-
-
+                    });
                 });
+
+
             },
             normalizer(node){
                 //去掉children=[]的children属性
@@ -194,10 +192,18 @@
                     children:node.children
                 }
             },
+            myUpload(photo){
+                var form = new FormData();
+                form.append("file",photo.file)
+                form.append("id",this.form.id)
+                uploadImage(form).then(res => {
+                    if(res.status===51){
+                        alert(res.msg)
+                    }
+                });
+            },
         },
         mounted() {
-
-            this.getalltype();
             this.getParams();
         },
     }
