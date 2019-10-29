@@ -20,12 +20,11 @@
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
                     :auto-upload="true"
-
                     :data="this.form"
                     :file-list="fileList"
                     ref="upload"
                     :on-remove="handleRemove">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" ></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
@@ -40,7 +39,6 @@
                     :open-on-click="true"
                     :disable-branch-nodes="true"
                     :options="options"
-                    :limit="3"
                     :max-height="200"
                     v-model="form.leaderUserid"
             />
@@ -82,9 +80,9 @@
                     leader:null,
                     priority:'',
                     leaderUserid:null,
-                    photo:[],
+                    photo:'',
+                    photoArray:[],
                 },
-
                 fileList:[],
                 // define options
                 options: [ {
@@ -105,11 +103,15 @@
 
         methods: {
             handleRemove(file, fileList) {
-                for(var i = 0;i<this.form.photo.length;i=i+1){
-                    if(this.form.photo[i]==file.name){
-                        this.$delete(this.form.photo,i)
+                console.log(file, fileList);
+                this.fileList.some((item, i)=>{
+                    if(item.uid==file.uid){
+                        this.fileList.splice(i, 1)
+                        //在数组的some方法中，如果return true，就会立即终止这个数组的后续循环
+                        return true
                     }
-                }
+                })
+                console.log(this.fileList)
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
@@ -117,6 +119,13 @@
             },
 
             submit2: function (res) {
+                let photoArray=[]
+                this.fileList.forEach((item) => {
+                    photoArray.push(item.url);
+                })
+                let photo=JSON.stringify(photoArray)
+                photo.replace(/\"/g,"")
+                console.log(photo)
                 let parm=this.qs.stringify({
                     id:this.form.id,
                     name:this.form.name,
@@ -125,7 +134,8 @@
                     leader:this.form.leader,
                     priority:this.form.priority,
                     leaderUserid:this.form.leaderUserid,
-                    photo:this.form.photo.toString()
+                    photo:photo,
+                    photoArray:photoArray
                 });
 
                 editMass(parm).then(res => {
@@ -136,10 +146,12 @@
             },
 
             handleAvatarSuccess(res) {
-
-                console.log(this.form.photo);
-                this.form.photo.push(res.data);
-
+                let temp = {
+                    name: res.data,
+                    url: res.data
+                };
+                this.fileList.push(temp)
+                console.log(this.fileList)
             },
             handelIncrease(step) {
                 this.form.introduction=step
@@ -150,14 +162,14 @@
                     id : sessionStorage.getItem("massId"),
                     });
                 getProductDetail(id).then((res) => {
-                    this.form.photo=[];
                     this.form=res.data;
-                    let image= {
-                        name: 'name',
-                        url:this.form.photo,
-                    };
-                    this.fileList.push(image);
-                    console.log(this.fileList)
+                        this.form.photoArray.forEach((item) => {
+                            let temp = {
+                                name: item,
+                                url: item
+                            };
+                            this.fileList.push(temp);
+                        })
                     let parm=this.qs.stringify({
                         mass_id:this.form.id,
                     });
@@ -178,8 +190,6 @@
                         });
                     });
                 });
-
-
             },
             normalizer(node){
                 //去掉children=[]的children属性
