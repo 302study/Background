@@ -138,11 +138,11 @@
                     // 获取富文本组件实例
                     let quill = this.$refs.myQuillEditor.quill;
                     // 如果上传成功
-                    if (res.status ===10001) {
+                    if (res.status ===31) {
                         // 获取光标所在位置
                         let length = quill.getSelection().index;
                         // 插入图片  res.url为服务器返回的图片地址
-                        quill.insertEmbed(length, "image", res.data.url);
+                        quill.insertEmbed(length, "image", res.data);
                         // 调整光标到最后
                         quill.setSelection(length + 1);
                     } else {
