@@ -19,13 +19,12 @@
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-success="handleAvatarSuccess"
-
                     :auto-upload="true"
-                    :http-request="myUpload"
+                    :data="this.form"
                     :file-list="fileList"
                     ref="upload"
                     :on-remove="handleRemove">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" ></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
@@ -40,9 +39,8 @@
                     :open-on-click="true"
                     :disable-branch-nodes="true"
                     :options="options"
-                    :limit="3"
                     :max-height="200"
-                    v-model="form.leader_userId"
+                    v-model="form.leaderUserid"
             />
         </el-form-item>
         <el-form-item label="社团介绍">
@@ -81,7 +79,9 @@
                     number:'',
                     leader:null,
                     priority:'',
-                    leader_userId:null,
+                    leaderUserid:null,
+                    photo:'',
+                    photoArray:[],
                 },
                 fileList:[],
                 // define options
@@ -103,15 +103,15 @@
 
         methods: {
             handleRemove(file, fileList) {
-                for(var i = 0;i<this.form.subImages.length;i=i+1){
-                    if(this.form.subImages[i]==file.name){
-                        this.$delete(this.form.subImages,i)
+                console.log(file, fileList);
+                this.fileList.some((item, i)=>{
+                    if(item.uid==file.uid){
+                        this.fileList.splice(i, 1)
+                        //在数组的some方法中，如果return true，就会立即终止这个数组的后续循环
+                        return true
                     }
-                }
-                if(this.form.mainImage==file.name){
-                    this.form.mainImage="";
-
-                }
+                })
+                console.log(this.fileList)
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
@@ -119,6 +119,13 @@
             },
 
             submit2: function (res) {
+                let photoArray=[]
+                this.fileList.forEach((item) => {
+                    photoArray.push(item.url);
+                })
+                let photo=JSON.stringify(photoArray)
+                photo.replace(/\"/g,"")
+                console.log(photo)
                 let parm=this.qs.stringify({
                     id:this.form.id,
                     name:this.form.name,
@@ -126,7 +133,9 @@
                     number:this.form.number,
                     leader:this.form.leader,
                     priority:this.form.priority,
-                    leader_userId:this.form.leader_userId
+                    leaderUserid:this.form.leaderUserid,
+                    photo:photo,
+                    photoArray:photoArray
                 });
 
                 editMass(parm).then(res => {
@@ -135,16 +144,14 @@
                     }
                 });
             },
-            // 图片上传成功后，后台返回图片的路径
-            onSuccess: function (res) {
 
-                if (res.status == 200) {
-                    this.imgUrl = res.data.imgUrl;
-                }
-            },
             handleAvatarSuccess(res) {
-                this.form.subImages.push(res.data.url);
-
+                let temp = {
+                    name: res.data,
+                    url: res.data
+                };
+                this.fileList.push(temp)
+                console.log(this.fileList)
             },
             handelIncrease(step) {
                 this.form.introduction=step
@@ -156,31 +163,32 @@
                     });
                 getProductDetail(id).then((res) => {
                     this.form=res.data;
-                });
-
-
-            },
-            getalltype() {
-                let parm=this.qs.stringify({
-                    mass_id:1
-                });
-                getMassUser(parm).then(res => {
-                    let data=[];
-                    data=res.data;
-                    data.forEach((item) => {
-                        let temp= {
-                            id: '',
-                            name: '',
-                            parentid:'0',
-                            children: [],
-                        };
-                        temp.id=item.id;
-                        temp.name=item.name;
-                        temp=this.normalizer(temp);
-                        this.options.push(temp);
+                        this.form.photoArray.forEach((item) => {
+                            let temp = {
+                                name: item,
+                                url: item
+                            };
+                            this.fileList.push(temp);
+                        })
+                    let parm=this.qs.stringify({
+                        mass_id:this.form.id,
+                    });
+                    getMassUser(parm).then(res => {
+                        let data=[];
+                        data=res.data;
+                        data.forEach((item) => {
+                            let temp= {
+                                id: '',
+                                name: '',
+                                parentid:'0',
+                                children: [],
+                            };
+                            temp.id=item.id;
+                            temp.name=item.name;
+                            temp=this.normalizer(temp);
+                            this.options.push(temp);
                         });
-
-
+                    });
                 });
             },
             normalizer(node){
@@ -194,10 +202,18 @@
                     children:node.children
                 }
             },
+            myUpload(photo){
+                var form = new FormData();
+                form.append("file",photo.file)
+                form.append("id",this.form.id)
+                uploadImage(form).then(res => {
+                    if(res.status===51){
+                        alert(res.msg)
+                    }
+                });
+            },
         },
         mounted() {
-
-            this.getalltype();
             this.getParams();
         },
     }
