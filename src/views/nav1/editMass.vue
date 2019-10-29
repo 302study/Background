@@ -163,6 +163,7 @@
                     });
                 getProductDetail(id).then((res) => {
                     this.form=res.data;
+                    console.log(this.form.photoArray)
                         this.form.photoArray.forEach((item) => {
                             let temp = {
                                 name: item,

@@ -132,8 +132,6 @@
                 formData.append('file',content.file); // 'file[]' 代表数组 其中`file`是可变的
 
                 uploadImage(formData).then(res=>{
-                    console.log(res);
-                    console.log(content.file)
                     // res为图片服务器返回的数据
                     // 获取富文本组件实例
                     let quill = this.$refs.myQuillEditor.quill;

@@ -5,13 +5,31 @@
 		</el-form-item>
 
 
-        <el-form-item label="社团人数">
-            <el-input type="number" v-model="form.number"></el-input>
-        </el-form-item>
+		<el-form-item label="社团人数">
+			<el-input type="number" v-model="form.number"></el-input>
+		</el-form-item>
 
-        <el-form-item label="优先级">
-            <el-input type="number" v-model="form.priority"></el-input>
-        </el-form-item>
+		<el-form-item label="优先级">
+			<el-input type="number" v-model="form.priority"></el-input>
+		</el-form-item>
+
+		<el-form-item label="社团照片">
+			<el-upload
+					action="/api/MassController/upload"
+					list-type="picture-card"
+					:on-preview="handlePictureCardPreview"
+					:on-success="handleAvatarSuccess"
+					:auto-upload="true"
+					:data="this.form"
+					:file-list="fileList"
+					ref="upload"
+					:on-remove="handleRemove">
+				<i class="el-icon-plus" ></i>
+			</el-upload>
+			<el-dialog :visible.sync="dialogVisible">
+				<img width="100%" :src="dialogImageUrl" alt="">
+			</el-dialog>
+		</el-form-item>
 
 		<el-form-item label="团长">
 			<treeselect
@@ -21,12 +39,10 @@
 					:open-on-click="true"
 					:disable-branch-nodes="true"
 					:options="options"
-					:limit="3"
 					:max-height="200"
-					v-model="form.leader_userId"
+					v-model="form.leaderUserid"
 			/>
 		</el-form-item>
-
 		<el-form-item label="社团介绍">
 			<Editor v-bind:vvalue="form.introduction" @input="handelIncrease"></Editor>
 		</el-form-item>
@@ -41,8 +57,7 @@
 </template>
 
 <script>
-	import {getMassUser,addMass, uploadImage} from '../../api/api'
-
+	import {selectUser, uploadImage,addMass} from '../../api/api'
 	import Editor from "@/components/Editor";
 	// import the component
 	import Treeselect from '@riophae/vue-treeselect'
@@ -63,7 +78,9 @@
 					number:'',
 					leader:null,
 					priority:'',
-					leader_userId:null,
+					leaderUserid:null,
+					photo:'',
+					photoArray:[],
 				},
 				fileList:[],
 				// define options
@@ -80,21 +97,18 @@
 			loading() {
 				return this.$store.state.loading;
 			},
-
 		},
 
 
 		methods: {
 			handleRemove(file, fileList) {
-				for(var i = 0;i<this.form.subImages.length;i=i+1){
-					if(this.form.subImages[i]===file.name){
-						this.$delete(this.form.subImages,i)
+				this.fileList.some((item, i)=>{
+					if(item.uid==file.uid){
+						this.fileList.splice(i, 1)
+						//在数组的some方法中，如果return true，就会立即终止这个数组的后续循环
+						return true
 					}
-				}
-				if(this.form.mainImage===file.name){
-					this.form.mainImage="";
-
-				}
+				})
 			},
 			handlePictureCardPreview(file) {
 				this.dialogImageUrl = file.url;
@@ -102,6 +116,12 @@
 			},
 
 			submit2: function (res) {
+				let photoArray=[]
+				this.fileList.forEach((item) => {
+					photoArray.push(item.url);
+				})
+				let photo=JSON.stringify(photoArray)
+				photo.replace(/\"/g,"")
 				let parm=this.qs.stringify({
 					id:this.form.id,
 					name:this.form.name,
@@ -109,52 +129,49 @@
 					number:this.form.number,
 					leader:this.form.leader,
 					priority:this.form.priority,
-					leader_userId:this.form.leader_userId
+					leaderUserid:this.form.leaderUserid,
+					photo:photo,
+					photoArray:photoArray
 				});
 
-				addMass(parm).then(res => {
-					if(res.status===51){
+                addMass(parm).then(res => {
+					if(res.status===41){
 						alert(res.msg)
+                        this.$router.push({
+                            path: '/table',
+                        })
 					}
 				});
 			},
-			// 图片上传成功后，后台返回图片的路径
-			onSuccess: function (res) {
 
-				if (res.status === 200) {
-					this.imgUrl = res.data.imgUrl;
-				}
-			},
 			handleAvatarSuccess(res) {
-				this.form.subImages.push(res.data.url);
-
+				let temp = {
+					name: res.data,
+					url: res.data
+				};
+				this.fileList.push(temp)
 			},
 			handelIncrease(step) {
 				this.form.introduction=step
-				console.log(this.form.introduction)
 			},
-			getalltype() {
-				let parm=this.qs.stringify({
-					mass_id:1
-				});
-				getMassUser(parm).then(res => {
-					let data=[];
-					data=res.data;
-					data.forEach((item) => {
-						let temp= {
-							id: '',
-							name: '',
-							parentid:'0',
-							children: [],
-						};
-						temp.id=item.id;
-						temp.name=item.name;
-						temp=this.normalizer(temp);
-						this.options.push(temp);
+			getParams(){
+                selectUser().then(res => {
+						let data=[];
+						data=res.data.data;
+						data.forEach((item) => {
+							let temp= {
+								id: '',
+								name: '',
+								parentid:'0',
+								children: [],
+							};
+							temp.id=item.id;
+							temp.name=item.name;
+							temp=this.normalizer(temp);
+							this.options.push(temp);
+						});
 					});
 
-
-				});
 			},
 			normalizer(node){
 				//去掉children=[]的children属性
@@ -167,10 +184,19 @@
 					children:node.children
 				}
 			},
+			myUpload(photo){
+				var form = new FormData();
+				form.append("file",photo.file)
+				form.append("id",this.form.id)
+				uploadImage(form).then(res => {
+					if(res.status===51){
+						alert(res.msg)
+					}
+				});
+			},
 		},
 		mounted() {
-
-			this.getalltype();
+			this.getParams();
 		},
 	}
 
