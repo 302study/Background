@@ -74,7 +74,7 @@
 <script>
 
 	import { getProductList} from '../../api/api';
-	import { delMass} from '../../api/api';
+	import { editMass} from '../../api/api';
 	export default {
 		inject:['reload'],
 		data() {
@@ -158,7 +158,7 @@
 					id:row.id,
 					state:state
 				})
-                delMass(off).then((res) => {
+                editMass(off).then((res) => {
 					if(state===0)alert("上架成功");
                     if(state===1)alert("删除成功");
                     if(state===2)alert("下架成功");

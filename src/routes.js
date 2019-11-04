@@ -6,8 +6,8 @@ import Table from './views/nav1/Table.vue'
 import peopleManage from './views/nav1/peopleManage.vue'
 import Form from './views/nav1/addMass.vue'
 import user from './views/nav1/user.vue'
-import Page4 from './views/nav2/Page4.vue'
-import Page5 from './views/nav2/Page5.vue'
+import activity from './views/nav2/activity.vue'
+import editActivity from './views/nav2/editActivity.vue'
 import Page6 from './views/nav3/Page6.vue'
 import echarts from './views/charts/echarts.vue'
 import editMass from './views/nav1/editMass'
@@ -58,8 +58,8 @@ let routes = [
         name: '活动管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/page4', component: Page4, name: '页面4' },
-            { path: '/page5', component: Page5, name: '页面5' }
+            { path: '/activity', component: activity, name: '页面4' },
+            { path: '/editActivity', component: editActivity, name: '页面5' }
         ]
     },
     {
@@ -68,8 +68,8 @@ let routes = [
         name: '论坛管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/page4', component: Page4, name: '页面4' },
-            { path: '/page5', component: Page5, name: '页面5' }
+            { path: '/activity', component: activity, name: '页面4' },
+            { path: '/editActivity', component: editActivity, name: '页面5' }
         ]
     },
     {
