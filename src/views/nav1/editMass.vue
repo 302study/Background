@@ -163,20 +163,22 @@
                     });
                 getProductDetail(id).then((res) => {
                     this.form=res.data;
-                    console.log(this.form.photoArray)
-                        this.form.photoArray.forEach((item) => {
-                            let temp = {
-                                name: item,
-                                url: item
-                            };
-                            this.fileList.push(temp);
-                        })
+                        if(this.form.photoArray!=null){
+                            this.form.photoArray.forEach((item) => {
+                                let temp = {
+                                    name: item,
+                                    url: item
+                                };
+                                this.fileList.push(temp);
+                            });
+                        }
                     let parm=this.qs.stringify({
                         mass_id:this.form.id,
                     });
                     getMassUser(parm).then(res => {
                         let data=[];
                         data=res.data;
+                        console.log(data)
                         data.forEach((item) => {
                             let temp= {
                                 id: '',
