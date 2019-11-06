@@ -1,37 +1,9 @@
 <template>
 	<el-form ref="form" :model="form" label-width="80px" @submit.prevent="onSubmit" style="margin:20px;width:60%;min-width:600px;">
-		<el-form-item label="社团名称">
+		<el-form-item label="活动名称">
 			<el-input v-model="form.name"></el-input>
 		</el-form-item>
-
-
-		<el-form-item label="社团人数">
-			<el-input type="number" v-model="form.number"></el-input>
-		</el-form-item>
-
-		<el-form-item label="优先级">
-			<el-input type="number" v-model="form.priority"></el-input>
-		</el-form-item>
-
-		<el-form-item label="社团照片">
-			<el-upload
-					action="/api/MassController/upload"
-					list-type="picture-card"
-					:on-preview="handlePictureCardPreview"
-					:on-success="handleAvatarSuccess"
-					:auto-upload="true"
-					:data="this.form"
-					:file-list="fileList"
-					ref="upload"
-					:on-remove="handleRemove">
-				<i class="el-icon-plus" ></i>
-			</el-upload>
-			<el-dialog :visible.sync="dialogVisible">
-				<img width="100%" :src="dialogImageUrl" alt="">
-			</el-dialog>
-		</el-form-item>
-
-		<el-form-item label="团长">
+		<el-form-item label="活动社团">
 			<treeselect
 					name="demo"
 					:multiple="false"
@@ -40,11 +12,28 @@
 					:disable-branch-nodes="true"
 					:options="options"
 					:max-height="200"
-					v-model="form.leaderUserid"
+					v-model="form.massId"
 			/>
 		</el-form-item>
-		<el-form-item label="社团介绍">
-			<Editor v-bind:vvalue="form.introduction" @input="handelIncrease"></Editor>
+		<el-form-item label="参与人数">
+			<el-input type="number" v-model="form.participantsNumber"></el-input>
+		</el-form-item>
+		<el-form-item label="活动日期">
+			<el-date-picker
+					v-model="date"
+					type="daterange"
+					range-separator="至"
+					start-placeholder="开始日期"
+					end-placeholder="结束日期"
+					value-format=" yyyy-MM-dd HH:mm:ss">
+			</el-date-picker>
+		</el-form-item>
+		<el-form-item label="优先级">
+			<el-input type="number" v-model="form.priority"></el-input>
+		</el-form-item>
+
+		<el-form-item label="活动介绍">
+			<Editor v-bind:vvalue="form.content" @input="handelIncrease"></Editor>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="submit2">立即创建</el-button>
@@ -57,14 +46,13 @@
 </template>
 
 <script>
-	import {getMassUser, uploadImage} from '../../api/api'
-	import {editMass} from '../../api/api'
+	import {getAllMass,getActivityDetail} from '../../api/api'
+	import {updateAcvitity} from '../../api/api'
 	import Editor from "@/components/Editor";
 	// import the component
 	import Treeselect from '@riophae/vue-treeselect'
 	// import the styles
 	import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-	import {getProductDetail} from '../../api/api'
 	export default {
 		components: {
 			Editor,
@@ -75,13 +63,12 @@
 				form: {
 					id:'',
 					name: '',
-					introduction:'',
-					number:'',
-					leader:null,
+					massId:'',
+					participantsNumber:'',
+					startDate:'',
+					endDate:'',
+					content:'',
 					priority:'',
-					leaderUserid:null,
-					photo:'',
-					photoArray:[],
 				},
 				fileList:[],
 				// define options
@@ -91,7 +78,8 @@
 				}, ],
 				dialogImageUrl: '',
 				textd:'',
-				dialogVisible: false
+				dialogVisible: false,
+				date:'',
 			}
 		},
 		computed: {//实时计算
@@ -102,83 +90,49 @@
 
 
 		methods: {
-			handleRemove(file, fileList) {
-				console.log(file, fileList);
-				this.fileList.some((item, i)=>{
-					if(item.uid==file.uid){
-						this.fileList.splice(i, 1)
-						//在数组的some方法中，如果return true，就会立即终止这个数组的后续循环
-						return true
-					}
-				})
-				console.log(this.fileList)
-			},
-			handlePictureCardPreview(file) {
-				this.dialogImageUrl = file.url;
-				this.dialogVisible = true;
-			},
-
 			submit2: function (res) {
-				let photoArray=[]
-				this.fileList.forEach((item) => {
-					photoArray.push(item.url);
-				})
-				let photo=JSON.stringify(photoArray)
-				photo.replace(/\"/g,"")
-				console.log(photo)
+				this.form.startDate=this.date[0];
+				this.form.startDate.setHours(this.form.startDate.getHours() + 8);
+				this.form.endDate=this.date[1];
+				this.form.endDate.setHours(this.form.endDate.getHours() + 8);
 				let parm=this.qs.stringify({
 					id:this.form.id,
 					name:this.form.name,
-					introduction:this.form.introduction,
-					number:this.form.number,
-					leader:this.form.leader,
-					priority:this.form.priority,
-					leaderUserid:this.form.leaderUserid,
-					photo:photo,
-					photoArray:photoArray
+					massId:this.form.massId,
+					participantsNumber:this.form.participantsNumber,
+					startDate:this.form.startDate,
+					endDate:this.form.endDate,
+					content:this.form.content,
+					priority:this.form.priority
 				});
-
-				editMass(parm).then(res => {
+				updateAcvitity(parm).then(res => {
 					if(res.status===51){
 						alert(res.msg)
+						this.$router.push({
+							path: '/activity',
+						})
 					}
 				});
 			},
-
-			handleAvatarSuccess(res) {
-				let temp = {
-					name: res.data,
-					url: res.data
-				};
-				this.fileList.push(temp)
-				console.log(this.fileList)
-			},
 			handelIncrease(step) {
-				this.form.introduction=step
-				console.log(this.form.introduction)
+				this.form.content=step
+
 			},
 			getParams(){
 				let id=this.qs.stringify({
 					id : sessionStorage.getItem("activityId"),
 				});
-				getProductDetail(id).then((res) => {
+				getActivityDetail(id).then((res) => {
 					this.form=res.data;
-					if(this.form.photoArray!=null){
-						this.form.photoArray.forEach((item) => {
-							let temp = {
-								name: item,
-								url: item
-							};
-							this.fileList.push(temp);
-						});
-					}
-					let parm=this.qs.stringify({
-						mass_id:this.form.id,
-					});
-					getMassUser(parm).then(res => {
+					let date=[
+					];
+					date.push(this.getDate(this.form.startDate));
+					date.push(this.getDate(this.form.endDate));
+					this.date=date;
+
+					getAllMass().then(res => {
 						let data=[];
-						data=res.data;
-						console.log(data)
+						data=res.data.data;
 						data.forEach((item) => {
 							let temp= {
 								id: '',
@@ -205,16 +159,17 @@
 					children:node.children
 				}
 			},
-			myUpload(photo){
-				var form = new FormData();
-				form.append("file",photo.file)
-				form.append("id",this.form.id)
-				uploadImage(form).then(res => {
-					if(res.status===51){
-						alert(res.msg)
-					}
-				});
-			},
+			getDate(strDate) {
+				var dependedVal=strDate;
+//根据日期字符串转换成日期
+				var regEx = new RegExp("\\-","gi");
+				dependedVal=dependedVal.replace(regEx,"/");
+				var milliseconds=Date.parse(dependedVal);
+				var dependedDate=new Date();
+				dependedDate.setTime(milliseconds);
+
+				return dependedDate
+			} ,
 		},
 		mounted() {
 			this.getParams();

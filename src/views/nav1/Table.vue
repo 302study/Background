@@ -73,7 +73,7 @@
 
 <script>
 
-	import { getProductList} from '../../api/api';
+	import { getAllMass} from '../../api/api';
 	import { editMass} from '../../api/api';
 	export default {
 		inject:['reload'],
@@ -107,15 +107,15 @@
 				this.page = val;
 				this.getProductList();
 			},
-			//获取商品列表
-			getUsers() {
+			//获取社团列表
+			getAllMass() {
 				let para = {
 					page: this.page,
 					name: this.filters.name
 				};
 				this.listLoading = true;
 				//NProgress.start();
-				getProductList(para).then((res) => {
+				getAllMass(para).then((res) => {
 
 
 					this.products = res.data.data;
@@ -172,7 +172,7 @@
 		},
 
 		mounted() {
-			this.getUsers();
+			this.getAllMass();
 
 		}
 	}
