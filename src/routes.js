@@ -4,11 +4,10 @@ import Home from './views/Home.vue'
 import Main from './views/Main.vue'
 import Table from './views/nav1/Table.vue'
 import peopleManage from './views/nav1/peopleManage.vue'
-import Form from './views/nav1/addMass.vue'
-import user from './views/nav1/user.vue'
 import activity from './views/nav2/activity.vue'
 import editActivity from './views/nav2/editActivity.vue'
-import Page6 from './views/nav3/Page6.vue'
+import addActivity from "./views/nav2/addActivity";
+import user from './views/nav3/user.vue'
 import echarts from './views/charts/echarts.vue'
 import editMass from './views/nav1/editMass'
 import addMass from "./views/nav1/addMass";
@@ -46,7 +45,7 @@ let routes = [
             {
                 path: '/addMass',
                 component: addMass,
-                name: '编辑社团' ,
+                name: '新增社团' ,
                 hidden: true
             },
 
@@ -58,39 +57,31 @@ let routes = [
         name: '活动管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/activity', component: activity, name: '页面4' },
-            { path: '/editActivity', component: editActivity, name: '页面5' }
+            { path: '/activity', component: activity, name: '活动列表' },
+            {
+                path: '/editActivity',
+                component: editActivity,
+                name: '编辑活动' ,
+                hidden: true
+            },
+            {
+                path: '/addActivity',
+                component: addActivity,
+                name: '新增活动' ,
+                hidden: true
+            },
         ]
     },
     {
         path: '/',
         component: Home,
-        name: '论坛管理',
+        name: '用户管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/activity', component: activity, name: '页面4' },
-            { path: '/editActivity', component: editActivity, name: '页面5' }
+            { path: '/user', component: user, name: '用户列表' },
         ]
     },
-    {
-        path: '/',
-        component: Home,
-        name: '',
-        iconCls: 'fa fa-address-card',
-        leaf: true,//只有一个节点
-        children: [
-            { path: '/page6', component: Page6, name: '个人管理' }
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
-        name: 'Charts',
-        iconCls: 'fa fa-bar-chart',
-        children: [
-            { path: '/echarts', component: echarts, name: 'echarts' }
-        ]
-    },
+
     {
         path: '*',
         hidden: true,

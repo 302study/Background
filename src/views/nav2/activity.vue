@@ -6,13 +6,13 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="社团名称"></el-input>
+          <el-input v-model="filters.name" placeholder="活动名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="">查询</el-button>
+          <el-button type="primary" v-on:click="getActivitybyName">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="jump_addMass">新增</el-button>
+          <el-button type="primary" @click="jump_addActivity">新增</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -72,7 +72,7 @@
 
 <script>
 
-  import { selectActivity,getProductDetail} from '../../api/api';
+  import { selectActivity,getProductDetail,getActivityDetailByName} from '../../api/api';
   import { updateActivaty} from '../../api/api';
   export default {
     inject:['reload'],
@@ -104,7 +104,7 @@
     methods: {
       handleCurrentChange(val) {
         this.page = val;
-        this.getProductList();
+        this.getActivity();
       },
       //获取活动列表
       getActivity() {
@@ -130,9 +130,32 @@
           this.total = res.data.total;
           this.currentChangePage(this.activity,this.currentPage)
           this.total=res.data.data.total;
-          console.log(this.activity)
           this.listLoading = false;
           //NProgress.done();
+        });
+      },
+      //工具栏查询函数
+      getActivitybyName() {
+        let para=this.qs.stringify({
+          name:this.filters.name
+        });
+        this.listLoading = true;
+        getActivityDetailByName(para).then((res) => {
+
+          this.activity = res.data;
+          //根据massId查找massName并用set方法新增字段
+          this.activity.forEach((item) => {
+            let parm=this.qs.stringify({
+              id:item.massId,
+            });
+            getProductDetail(parm).then((res) => {
+              this.$set(item,"massName", res.data.name);
+            });
+
+          });
+          this.currentChangePage(this.activity,this.currentPage)
+          this.listLoading = false;
+
         });
       },
       handleSizeChange1: function(pageSize) { // 每页条数切换
@@ -173,8 +196,8 @@
           this.reload();
         });
       },
-      jump_addMass(){
-        this.$router.push({ path:'/addMass'  })
+      jump_addActivity(){
+        this.$router.push({ path:'/addActivity'  })
 
       }
     },

@@ -9,7 +9,7 @@
 					<el-input v-model="filters.name" placeholder="社团名称"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="">查询</el-button>
+					<el-button type="primary" v-on:click="getMassbyName">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="jump_addMass">新增</el-button>
@@ -73,7 +73,7 @@
 
 <script>
 
-	import { getAllMass} from '../../api/api';
+	import { getAllMass,selectMassByName} from '../../api/api';
 	import { editMass} from '../../api/api';
 	export default {
 		inject:['reload'],
@@ -105,7 +105,7 @@
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getProductList();
+				this.getAllMass();
 			},
 			//获取社团列表
 			getAllMass() {
@@ -116,15 +116,23 @@
 				this.listLoading = true;
 				//NProgress.start();
 				getAllMass(para).then((res) => {
-
-
 					this.products = res.data.data;
-					this.total = res.data.total;
+
                     this.currentChangePage(this.products,this.currentPage)
-					this.total=res.data.data.total;
-					console.log(this.products)
 					this.listLoading = false;
 					//NProgress.done();
+				});
+			},
+			//工具栏查询函数
+			getMassbyName() {
+				let para=this.qs.stringify({
+					name:this.filters.name
+				});
+				this.listLoading = true;
+				selectMassByName(para).then((res) => {
+					this.products = res.data;
+					this.currentChangePage(this.products,this.currentPage)
+					this.listLoading = false;
 				});
 			},
 			handleSizeChange1: function(pageSize) { // 每页条数切换
