@@ -35,7 +35,6 @@ let routes = [
         children: [
             { path: '/main', component: Main, name: '主页', hidden: true },
             { path: '/table', component: Table, name: '社团列表' },
-            { path: '/form', component: peopleManage, name: '社团管理' },
 
             {
                 path: '/editMass',
