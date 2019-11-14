@@ -49,13 +49,6 @@
 			</el-table-column>
 		</el-table>
 
-
-		<!--&lt;!&ndash;工具条&ndash;&gt;-->
-		<!--<el-col :span="24" class="toolbar">-->
-		<!--<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>-->
-		<!--<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">-->
-		<!--</el-pagination>-->
-		<!--</el-col>-->
 		<div class="paginationClass">
 			<el-pagination
 					@size-change="handleSizeChange1"

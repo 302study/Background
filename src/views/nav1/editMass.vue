@@ -142,6 +142,9 @@
                     if(res.status===51){
                         alert(res.msg)
                     }
+                    this.$router.push({
+                        path: '/Table',
+                    })
                 });
             },
 

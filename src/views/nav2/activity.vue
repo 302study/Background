@@ -42,8 +42,8 @@
       </el-table-column>
       <el-table-column label="操作" min-width="22.5%">
         <template slot-scope="scope">
-        <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,0)" v-if="scope.row.state===2">上架</el-button>
-        <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,2)" v-if="scope.row.state===0">下架</el-button>
+        <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,0)" v-if="scope.row.state===2">发布</el-button>
+        <el-button type="primary" size="small" @click="handleDel(scope.$index, scope.row,2)" v-if="scope.row.state===0">撤销</el-button>
         <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
         <el-button type="danger" size="small" v-if="scope.row.state===2" @click="handleDel(scope.$index, scope.row,1)">删除</el-button>
         </template>
@@ -190,9 +190,9 @@
           state:state
         })
         updateActivaty(off).then((res) => {
-          if(state===0)alert("上架成功");
+          if(state===0)alert("发布成功");
           if(state===1)alert("删除成功");
-          if(state===2)alert("下架成功");
+          if(state===2)alert("撤销成功");
           this.reload();
         });
       },

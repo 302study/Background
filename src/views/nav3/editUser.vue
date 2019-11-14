@@ -1,39 +1,13 @@
 <template>
     <el-form ref="form" :model="form" label-width="80px" @submit.prevent="onSubmit" style="margin:20px;width:60%;min-width:600px;">
-        <el-form-item label="活动名称">
+        <el-form-item label="用户名称">
             <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="活动社团">
-            <treeselect
-                    name="demo"
-                    :multiple="false"
-                    :searchable="true"
-                    :open-on-click="true"
-                    :disable-branch-nodes="true"
-                    :options="options"
-                    :max-height="200"
-                    v-model="form.massId"
-            />
+        <el-form-item label="手机号码">
+            <el-input type="number" v-model="form.telephone"></el-input>
         </el-form-item>
-        <el-form-item label="参与人数">
-            <el-input type="number" v-model="form.participantsNumber"></el-input>
-        </el-form-item>
-        <el-form-item label="活动日期">
-            <el-date-picker
-                    v-model="date"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format=" yyyy-MM-dd HH:mm:ss">
-            </el-date-picker>
-        </el-form-item>
-        <el-form-item label="优先级">
-            <el-input type="number" v-model="form.priority"></el-input>
-        </el-form-item>
-
-        <el-form-item label="活动介绍">
-            <Editor v-bind:vvalue="form.content" @input="handelIncrease"></Editor>
+        <el-form-item label="用户邮箱">
+            <el-input v-model="form.email"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submit2">立即创建</el-button>
@@ -46,8 +20,7 @@
 </template>
 
 <script>
-    import {getAllMass,getActivityDetail} from '../../api/api'
-    import {updateAcvitity} from '../../api/api'
+    import {updateUser,selectUserById} from '../../api/api'
     import Editor from "@/components/Editor";
     // import the component
     import Treeselect from '@riophae/vue-treeselect'
@@ -63,23 +36,9 @@
                 form: {
                     id:'',
                     name: '',
-                    massId:'',
-                    participantsNumber:'',
-                    startDate:'',
-                    endDate:'',
-                    content:'',
-                    priority:'',
+                    telephone:'',
+                    email:'',
                 },
-                fileList:[],
-                // define options
-                options: [ {
-                    id: '',
-                    label: '',
-                }, ],
-                dialogImageUrl: '',
-                textd:'',
-                dialogVisible: false,
-                date:'',
             }
         },
         computed: {//实时计算
@@ -91,39 +50,27 @@
 
         methods: {
             submit2: function (res) {
-                this.form.startDate=this.date[0];
-                this.form.startDate.setHours(this.form.startDate.getHours() + 8);
-                this.form.endDate=this.date[1];
-                this.form.endDate.setHours(this.form.endDate.getHours() + 8);
                 let parm=this.qs.stringify({
                     id:this.form.id,
                     name:this.form.name,
-                    massId:this.form.massId,
-                    participantsNumber:this.form.participantsNumber,
-                    startDate:this.form.startDate,
-                    endDate:this.form.endDate,
-                    content:this.form.content,
-                    priority:this.form.priority
+                    telephone:this.form.telephone,
+                    email:this.form.email,
                 });
-                updateAcvitity(parm).then(res => {
+                updateUser(parm).then(res => {
                     if(res.status===51){
                         alert(res.msg)
                         this.$router.push({
-                            path: '/activity',
+                            path: '/user',
                         })
                     }
                 });
-            },
-            handelIncrease(step) {
-                this.form.content=step
-
             },
             getParams(){
                 let id=this.qs.stringify({
                     id : sessionStorage.getItem("userId"),
                 });
-                getActivityDetail(id).then((res) => {
-
+                selectUserById(id).then((res) => {
+                        this.form=res.data;
                 });
             },
 

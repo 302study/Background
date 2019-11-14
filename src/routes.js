@@ -8,6 +8,7 @@ import activity from './views/nav2/activity.vue'
 import editActivity from './views/nav2/editActivity.vue'
 import addActivity from "./views/nav2/addActivity";
 import user from './views/nav3/user.vue'
+import editUser from './views/nav3/editUser.vue'
 import echarts from './views/charts/echarts.vue'
 import editMass from './views/nav1/editMass'
 import addMass from "./views/nav1/addMass";
@@ -79,6 +80,7 @@ let routes = [
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/user', component: user, name: '用户列表' },
+            { path: '/editUser', component: editUser, name: '编辑用户', hidden: true },
         ]
     },
 
