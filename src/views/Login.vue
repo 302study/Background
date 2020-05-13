@@ -28,7 +28,7 @@
         },
         rules2: {
           account: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
+            { required: true, message: '请输入账号2222', trigger: 'blur' },
             //{ validator: validaePass }
           ],
           checkPass: [

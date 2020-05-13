@@ -29,7 +29,7 @@ import 'font-awesome/css/font-awesome.min.css'
 Vue.use(VueAxios,axios);
 Vue.prototype.qs=qs;
 Vue.use(quillEditor);
-axios.defaults.baseURL = '/api'
+// axios.defaults.baseURL = '/api'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -39,11 +39,11 @@ Vue.use(Vuex)
 const router = new VueRouter({
   routes
 })
-import global_ from './components/globle.vue'
-Vue.prototype.GLOBAL = global_;
-axios.defaults.baseURL=global_.BASE_URL;
-Vue.prototype.$ajax = axios;
-axios.defaults.withCredentials = true
+// import global_ from './components/globle.vue'
+// Vue.prototype.GLOBAL = global_;
+// axios.defaults.baseURL=global_.BASE_URL;
+// Vue.prototype.$ajax = axios;
+// axios.defaults.withCredentials = true
 router.beforeEach((to, from, next) => {
   //NProgress.start();
   if (to.path == '/login') {

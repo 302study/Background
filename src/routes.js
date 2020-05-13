@@ -9,7 +9,7 @@ import editActivity from './views/nav2/editActivity.vue'
 import addActivity from "./views/nav2/addActivity";
 import user from './views/nav3/user.vue'
 import editUser from './views/nav3/editUser.vue'
-import echarts from './views/charts/echarts.vue'
+import applyMass from "./views/nav1/applyMass";
 import editMass from './views/nav1/editMass'
 import addMass from "./views/nav1/addMass";
 let routes = [
@@ -35,7 +35,7 @@ let routes = [
         children: [
             { path: '/main', component: Main, name: '主页', hidden: true },
             { path: '/table', component: Table, name: '社团列表' },
-
+            { path: '/applyMass', component: applyMass, name: '社团申请表' },
             {
                 path: '/editMass',
                 component: editMass,
