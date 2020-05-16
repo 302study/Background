@@ -106,11 +106,14 @@
                     priority:this.form.priority
                 });
                 addAcvitity(parm).then(res => {
-                    if(res.status===51){
+                    if(res.status===41){
                         alert(res.msg)
                         this.$router.push({
                             path: '/activity',
                         })
+                    }
+                    else {
+                        alert("创建失败！")
                     }
                 });
             },

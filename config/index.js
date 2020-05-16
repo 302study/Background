@@ -23,15 +23,15 @@ module.exports = {
   },
   dev: {
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/',
     proxyTable: {
-      // '/api': {
-      //   target: "http://47.100.242.234:8080",//后端接口地址
-      //   changeOrigin:true,
-      //   pathRewrite:{
-      //     '^/api': ''
-      //   }
-      // },
+      '/api': {
+        target: "http://localhost:8080",//后端接口地址
+        changeOrigin:true,
+        pathRewrite:{
+          '^/api': ''
+        }
+      },
     },
     env: require('./dev.env'),
     host: 'localhost', // can be overwritten by process.env.HOST

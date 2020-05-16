@@ -29,7 +29,7 @@ import 'font-awesome/css/font-awesome.min.css'
 Vue.use(VueAxios,axios);
 Vue.prototype.qs=qs;
 Vue.use(quillEditor);
-// axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = '/api'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)

@@ -3,12 +3,10 @@
         <!-- 图片上传组件辅助-->
         <el-upload
                 class="avatar-uploader"
-                action="uploadHead"
-                name="img"
+                action="http://localhost:8080/MassController/upload"
                 :headers="header"
                 :show-file-list="false"
                 :on-success="uploadSuccess"
-                :http-request="myUpload"
                 :on-error="uploadError"
                 :before-upload="beforeUpload">
         </el-upload>
@@ -102,7 +100,7 @@
                         }
                     }
                 },
-                serverUrl: "http://nginx.wannarich.com/api/manage/product/upload", // 这里写你要上传的图片服务器地址
+                serverUrl: "http://47.100.242.234:8080/MassController/upload", // 这里写你要上传的图片服务器地址
                 header: {
                      token: sessionStorage.token
                 } // 有的图片服务器要求请求头需要有token
@@ -127,13 +125,10 @@
                 // 显示loading动画
                 this.quillUpdateImg = true;
             },
-            myUpload(content) {
-                let formData = new FormData();
-                formData.append('file',content.file); // 'file[]' 代表数组 其中`file`是可变的
-
-                uploadImage(formData).then(res=>{
+            myUpload(res) {
                     // res为图片服务器返回的数据
                     // 获取富文本组件实例
+                console.log(res.status.status)
                     let quill = this.$refs.myQuillEditor.quill;
                     // 如果上传成功
                     if (res.status ===31) {
@@ -148,24 +143,18 @@
                     }
                     // loading动画消失
                     this.quillUpdateImg = false;
-                }).catch(err=>{
-                    // loading动画消失
-                    this.quillUpdateImg = false;
-                    this.$message.error("图片插入失败");
-                })
             },
-            uploadSuccess(res, file) {
-                console.log(res);
-                console.log(file)
+            uploadSuccess(res) {
+                console.log(res.status);
                 // res为图片服务器返回的数据
                 // 获取富文本组件实例
                 let quill = this.$refs.myQuillEditor.quill;
                 // 如果上传成功
-                if (res.success === 'true') {
+                if (res.status === 31) {
                     // 获取光标所在位置
                     let length = quill.getSelection().index;
                     // 插入图片  res.url为服务器返回的图片地址
-                    quill.insertEmbed(length, "image", res.file_path);
+                    quill.insertEmbed(length, "image", res.data);
                     // 调整光标到最后
                     quill.setSelection(length + 1);
                 } else {
